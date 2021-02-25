@@ -3,19 +3,19 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - python=3.6
-  - numpy>=1.11
-  - scipy>=0.19.0
-  - matplotlib>=1.5.3
-  #- astroquery>=0.3.7 # from conda-forge channel
+  - python=3.7
+  - numpy
+  - scipy
+  - matplotlib
+  - astroquery # from conda-forge channel
   - beautifulsoup4
+  - astropy
   - requests
-  - anaconda
   - tqdm
   - pandas
   - lightkurve >2.0
   - oktopus # from conda-forge channel
-  - bokeh>=1.0
+  - bokeh
   - jupyter
   - anaconda
   - celerite
@@ -28,7 +28,7 @@ dependencies:
   - scikit-image
   - astroplan
   - pip
-  - reproject # conda-forge
+  # - reproject # conda-forge
   ## We need SEP, but it is flakey with conda, so manually install:
   #   https://sep.readthedocs.io/en/v1.0.x/
   #   pip install --no-deps sep
@@ -40,15 +40,7 @@ dependencies:
   #
   # Need to install Montage: https://github.com/Caltech-IPAC/Montage
   - pip:
-    - twisted
-    - mkl-random
-    - gatspy
-    - emcee
-    - corner
-    - astroml
-    #- git+https://github.com/astropy/astropy.git
-    #- git+https://github.com/astropy/astroquery.git # Need the master version
-    #- aplpy #use the master version on GitHub!
-    - astroml_addons
-    - montage-wrapper
-    #- tess-point
+      - twisted
+      - mkl-random
+      - emcee
+      - corner
