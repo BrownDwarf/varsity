@@ -1,0 +1,294 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%    GemPhase1_US.tex
+%
+%    GEMINI OBSERVATORY
+%    US PHASE I OBSERVING PROPOSAL TEMPLATE
+%    FOR SEMESTER 2020B
+%
+%    Version 1.6. August 27, 2013
+%
+%    Guidelines and assistance
+%    =========================
+%    2020A Announcement Web Page:
+%
+%    http://www.gemini.edu/sciops/observing-gemini/2020a-call-proposals
+%
+%    Please contact the Gemini Help Desk if you need assistance.
+%    http://www.gemini.edu/sciops/helpdesk/submit-general-helpdesk-request
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Please do not modify or delete this line.
+\documentclass[11pt]{article}
+\usepackage{GemPhase1_US21A}
+
+\usepackage{graphics,graphicx}
+%\usepackage{hyperref}
+
+\usepackage{tabulary}
+
+\usepackage{helvet}
+\usepackage{sidecap}
+\setlength{\parindent}{1cm}
+
+% Please do not modify or delete this line.
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Or use includegraphics for example
+
+%
+% Note that the Web form provides several useful and simple figure
+% options.
+
+\sciencejustification
+ \fontfamily{ptm}\selectfont{
+
+Condensate clouds should pervade the atmospheres of ultracool brown dwarfs and exoplanets, dictating the energy balance of these substars and controlling their photometric and spectroscopic properties. Yet physical understanding of these clouds has largely been limited to coarse phenomenology.  Clouds are difficult to model and even more difficult to observe, owing to the limitations of observing exoplanets near bright host-stars and faint ultracool LT dwarfs.
+
+Last month Apai et al. 2021 presented the \emph{TESS} lightcurve of the nearest known brown dwarf system, Luhman 16AB, residing at a mere 2 pc from the Sun, it is our third closest neighbor. The proximity of this ultracool L7.5/T0.5 pair makes them the latest spectral type objects amenable to contemporaneous TESS monitoring and high fidelity ground-based observations.  Remarkably, the Sector 10 TESS lightcurve of Luhman 16 shows over 100 rotations with global peak-to-valley cloud-induced variations over 25 days exceeding 15\% (Figure 1).  These variations are caused by clouds of as-yet-unknown extents, thicknesses, and opacities.
+
+%No instrument at Gemini nor VLT occured contemporaneously with TESS Sector 10 (March 26 - April 22, 2019).  We missed a key opportunity before but will not miss it this time -- simultaneous monitoring will allow us to know the phase (from TESS) and with both IGRINS and TESS, we can disentangle  the A/B components and variability
+
+Here we propose multi-epoch IGRINS observations contemporaneous with continuous TESS Sector 36 monitoring, from March 8 - March 18.  The epochs can be scheduled randomly during this 10 day window, easing their burden on the queue.  With five epochs---and TESS-Sector-10-like modulations---we expect to sample a fux range of $\sim 8\%$ (Figure 2), corresponding to a cloud coverage change large enough to detect with IGRINS with $S/N\sim100$.  We will decompose the IGRINS spectra into three components: 1) Luhman 16A, assumed weakly variable; 2) Luhman 16B clouds; and 3) Luhman 16B cloud-free.  We will be able to uniquely disentangle these components because the TESS data informs the relative phase of cloud coverage.
+
+The chemical and physical properties of brown dwarf and exoplanet clouds are so difficult to model and observe that any incremental progress can feel like a significant impact in this fledgling field.  This proposed DDT program stands to catapult our field by providing a line-by-line decomposition of the spectrum of clouds across the entire $H-$ and $K-$ bands, where most of the flux escapes these ultracool brown dwarfs.  Our field's biggest unsolved problem---the cause of the rapid L/T transition phase---can only be understood after we can accurately account for cloud physical chemistry.  Moreover, the spectra will have tremendous archival legacy value for decades to come, with the prospect for snapshot image reconstruction of the stellar surface, leveraging both the TESS lightcurve and IGRINS line profile perturbations.
+
+%% 28 visits !!
+% Dates of existing:
+%2018-05-05 
+%2018-05-06
+%2018-05-07
+%2018-05-08 
+%2018-05-21 
+%2018-05-22 
+%2018-05-23
+%2018-05-24
+%2018-05-25
+%2018-05-26 
+%2018-05-27
+%2018-05-28
+%2018-06-02
+%2018-06-03
+%2018-06-04 (x2)
+%2018-06-05
+%2018-06-20
+%2018-06-21
+%2018-06-22 
+%2018-06-23
+%2018-06-24
+%2018-06-26 
+%2018-06-27
+%2018-06-28
+%2018-06-29
+%2020-02-10 (x5 hours!)
+%2020-02-12 (x5 hours!)
+
+
+While observations of Luhman 16 with IGRINS exist, none have occured contemporaneously with optical monitoring precise enough to inform the phase of modulation, yielding highly degenerate fits to a spectral decomposition triptych.  Our proposed experimental design dramatically reduces the otherwise-vast-permutations of conceivable spectral components that can fit inside a single composite IGRINS spectrum.  The success of our program will instantly increase the value of existing IGRINS spectra of Luhman 16, since we can re-interpret spectra over multi-year baselines once we have faithfully disentangled the contribution of clouds.  
+
+TESS is not currently scheduled to re-observed Luhman 16 after Sector 37, so it is urgent that we obtain these observations now.  There will be a short three-day April window for which we plan to pursue 3 epochs through Fast Turnaround (FT), but poor weather and queue demands introduce significant risk to FT alone.  TESS might reobserve Luhman 16 in its Cycle 5 around 2023, or possibly later depending on as-yet-undetermined TESS targeting strategies (ecliptic versus all-sky).
+
+We will analyze the IGRINS spectra with state-of-the-art \texttt{Sonora} pre-computed synthetic spectral models of cloudy and cloud-free brown dwarf atmospheres developed by Co-I C. Morley (Marley et al. in prep).  Our team has developed two open source tools to conduct rapid data-model comparisons with the Sonora model grids. First, \texttt{intuition}\footnote{https://github.com/BrownDwarf/intuition} is a human-in-the-loop fitting procedure that rapidly provides best fits and upper and lower bounds on physical parameters such as $T_{eff}, \log{g}, v\sin{i}, RV$ and the \emph{veiling}-like signal from clouds.  Second, our group has implemented probabilistic spectral decomposition (Gully-Santiago et al. 2017) with the inference framework \emph{Starfish}\footnote{https://github.com/iancze/Starfish} (Czekala et al. 2015).  We have applied the framework to high resolution brown dwarf spectra, with remarkable success (Zhang et al. 2021, Gully-Santiago et al. in prep.).  These tools are ready today, making it feasible to have a clear and rapid path to publication.
+
+Luhman 16 is so bright that individual on-sky integrations should be comparable to the overhead time associated with acquiring the target, for a total visit time of 20 minutes.  For five epochs, we expect the entire program to take less than 2 hours.  To some extent this time will compete with my own existing program in the queue.  If needed, I am willing to reschedule some hours from my other IGRINS program to ensure that these urgent and valuable proposed observations take place.
+
+\clearpage
+
+\begin{figure}[h!]
+    \centering{\includegraphics[scale=0.7]{figures/Luhman16AB_IGRINS_2021A_TESS_scheduling.pdf}}
+    \caption{Sector 10 TESS light curve of Luhman 16AB mapped onto its Sector 36 observation window in March 2021.  Conspicuous large amplitude modulation attributable to a 5.28 day rotational modulation swells from 4\% to 10\%, and is associated with Luhman 16B.  A secular running-mean level trend of 10\% may arise from the ebb-and-flow of differentially rotating zonal circulation bands, analogous to a scaled-up Jupiter.}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering{\includegraphics[scale=0.7]{figures/Luhman16AB_IGRINS_2021A_TESS_flux_sampling.pdf}}
+    \caption{Example of TESS flux sampling of Luhman 16AB arising from randomly-scheduled IGRINS observations between March 8 and March 18.  By observing randomly we sample a larger range of cloud coverage than existing and costly all-night point-and-stare strategies (Crossfield et al. 2014).  The larger lever arm on cloud coverage fraction will make it easier to disambiguate the cloud and cloud-free spectral components.}
+\end{figure}
+    
+
+\setlength{\parindent}{0cm}
+\textbf{References:}
+{\footnotesize \textbf{Apai, Nardiello, \& Bedin 2021} ApJ, Volume 906, Issue 1, id.64 \textbf{Czekala et al. 2015} ApJ, 812, 128.; \textbf{Gully-Santiago et al. 2017} ApJ, 836, 200.; \textbf{Zhang et al. 2021} arXiv:2011.12294;
+\setlength{\parindent}{1cm}
+
+\clearpage
+
+
+% EXPERIMENTAL DESIGN
+%
+% This section should consist of text only (no figures).
+% There is a limit of one page of printed text.
+%
+% Describe your overall observational program.  How will these
+% observations contribute toward the accomplishment of the goals
+% outlined in the science justification?  Include information such as why
+% the specific  targets were selected, the sample size, the analysis, etc.
+% Describe any necessary calibrations in addition to the baseline calibrations.
+% If you've requested long-term status, justify why this is necessary for successful
+% completion of the science.
+%
+% NOTE: In previous versions of the proposal form, this section
+% requested details about the use of non-NOAO observing facilities.
+% Such information should now be entered in the following "Other
+% Facilities" section.
+
+\expdesign
+
+% PROPRIETARY PERIOD
+%
+% Enter the proprietary period for your data between the braces.
+% The normal duration is 12 months from when the data are taken at
+% the telescope.  Requests for longer proprietary periods must
+% be approved by the NOAO Director.
+
+\proprietaryperiod{12 months}
+
+
+% OTHER FACILITIES OR RESOURCES
+%
+% This section should consist of text only (no figures).
+% Please limit to about a half page of printed text.
+%
+% 1) We are interested in understanding how observations made through
+% NOAO observing opportunities complement or support data from other
+% facilities both on the ground and in space.   We will use this
+% information to guide the evolution of the NOAO program; it will not
+% affect the success of your proposal in the evaluation process.
+% Please describe how the proposed observations complement data from
+% other facilities, including private observatories and both ground-
+% and space-based telescopes.  In addressing this question, take a
+% broad view of your research program.  Are the data to be obtained
+% through this proposal going to help select samples for detailed
+% observations using larger telescopes or from space observatories?
+% Are these data going to be directly combined with data obtained
+% elsewhere to test a hypothesis?  Will these observations have
+% relevance to other observations, even though the proposal stands
+% on its own?  For each of these other facilities, indicate the nature
+% of the observations (yours or those of others), and describe the
+% importance of the observations proposed here in the context of the
+% entire program.
+%
+% 2) Do you currently have a grant that would provide resources
+% to support the data processing, analysis, and publication of the
+% observations proposed here?
+
+\otherfacilities
+
+
+% PAST USE
+%
+% How effectively have you used the facilities available through NOAO
+% in the past?
+% List allocations of telescope time on facilities available through
+% NOAO to the Principal Investigator during the past 2 years, together
+% with the current status of the data (cite publications where
+% appropriate).  Mark any allocations of time related to the current
+% proposal with a \relatedwork{} command.
+%
+% For example:
+%\thepast
+%\begin{tabular}{lll}
+%NOAO Proposal ID & Gemini ID & Status \\
+%================ & ========= & ====== \\
+%2010B-0700 & GS-2010B-Q-1 & Published in Smith 2011, ApJ, 1, 1. \\
+%\relatedwork{2011A-0700} & GS-2011A-Q-50 & Data obtained, reduction underway. \\
+%\end{tabular}
+
+\thepast
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% OBSERVING RUN DETAILS - REQUIRED FOR EACH INSTRUMENT USED
+%
+% Describe the observations to be made during this observing run in
+% the \technicaldescription section. Justify the specific telescope,
+% the number of nights, the instrument, and the lunar phase requested.
+% Use the Gemini Integration Time Calculator (ITC) for a typical source for each
+% instrument requested. Save the ITC  output as a text file and include that in this
+% section. The ITC pages will not count against the page limits.
+% Specify the total time needed (including overheads), and the minimum requested
+% time. If you are applying for instruments on both Gemini North and Gemini South,
+% please state the time request for each site.
+
+\technicaldescription
+
+
+We request that the slit be rotated parallel to the PA of the Luhman 16 AB system, so that the relative flux of the components can be controlled under variable seeing conditions.  The components are close enough that standard ABBA nod patterns can still separate the two components, making standard IGRINS data reduction feasible.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% BAND 3 INFORMATION
+% If you are applying for queue time, your ranking may place the program in
+% Band 3.  Band 3 observations are used to fill the queue when no Band 1 or 2
+% programs are available.  Successful Band 3 programs generally use poorer than
+% median observing conditions, have targets away from the most popular
+% regions of the sky, do not require strict timing or other constraints,
+% and do not require special instrument configurations.  You should describe
+% the changes you will make to the program to allow it to be successful in Band 3 in
+% the \bandthreeplan section, or write "This program is not suitable for band 3"
+% or "This is not a queue request". If a Band 3 allocation is acceptable and
+% the total Band 3 time request is different from the standard request, then
+% give the Band 3 time request for each partner. and update the time requested
+%  from each site.
+
+\bandthreeplan
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% CLASSICAL PROGRAM INFORMATION
+% If you are applying for classical time on Gemini, please enter ``Y'' in the
+% curly braces of the \classical command; otherwise enter ``N''.  Classical
+% proposals should define a backup program in case the weather is worse than
+% the observing conditions in the proposal.  Enter your classcial backup
+% in the \classicalbackup section.
+
+\classicalbackup
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% DUPLICATE OBSERVATIONS
+% A search of the Gemini Observatory Archive
+% (https://archive.gemini.edu) will reveal whether
+% Gemini has previously been used to observe your targets using similar or
+% identical observing setups.  If there are duplicate observations, please
+% justify why new observations should be taken in the \justifyduplications
+% section.  If the Archive search finds no duplicates, please enter
+% ``The GOA search revealed no duplicate observations''.
+
+\justifyduplications
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% ITC Attachments
+%
+
+% Use the Gemini Integration Time Calculator (ITC) for a typical source for each
+% instrument requested, see
+% http://www.gemini.edu/sciops/instruments/integration-time-calculators
+% Save the ITC output as a PDF file and include that in this section. The ITC pages
+% will not count against the page limits.  You may either merge the ITC PDF output
+% to the PDF version of this document or include the ITC PDF output
+% using \includepdf, eg.
+%
+% \includepdf[pages={-}]{ITCoutput.pdf}
+%
+% See the PIT FAQ (http://www.gemini.edu/node/11087/) for additional suggestions.
+
+\itcresults
+
+We used the exposure time calculator from the IGRINS At Gemini website:
+https://sites.google.com/site/igrinsatgemini/proposing-and-observing
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Please do not modify or delete this line.
+\end{document}
