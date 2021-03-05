@@ -49,11 +49,11 @@
 
 Condensate clouds should pervade the atmospheres of brown dwarfs and exoplanets, dictating the energy balance of these substellar objects and controlling their photometric and spectroscopic properties. Yet physical understanding of these clouds has largely been limited to coarse phenomenology.  Clouds are difficult to model and even more difficult to observe, owing to the absence of prominent spectral features and the intrinsic low luminosity of ultracool LT dwarfs.  Variable brown dwarfs offer a straightforward way to compare atmospheric columns with different cloud opacities to isolate the effect and properties of clouds.
 
-Last month Apai et al. 2021 presented the \emph{TESS} lightcurve of the nearest known brown dwarf system, Luhman 16AB; residing at a mere 2 pc from the Sun, it is our third closest neighbor. The proximity of this L7.5+T0.5 pair makes them the latest spectral type objects amenable to contemporaneous TESS monitoring and high fidelity ground-based observations.  Previously, Hubble Space Telescope spectroscopy resolving the $0.3''$ binary angular separation showed that Luhman 16 A has weak to no variability but Luhman 16 B has a $>10\%$ variability in the near infrared (Buenzli et al. 2015).  It was not clear what the TESS lightcurve would show.  Remarkably, the Sector 10 TESS lightcurve of Luhman 16 pinpointed the 5.28 hour rotation period of Luhman 16B and revealed global peak-to-valley cloud-induced variations over 25 days exceeding 15\% (Figure 1).  Conspicuous long-term variations convey cloud pattern changes driven by atmospheric circulation, signaling a new era of photometric data quality on these timescales.  However, due to the lack of simultaneous spectroscopic data, how much the cloud opacity, thickness, and particle size changed remains unknown.
+Last month Apai et al. 2021 presented the \emph{TESS} lightcurve of the nearest known brown dwarf system, Luhman 16AB; residing at a mere 2 pc from the Sun, it is our third closest neighbor. The proximity of this L7.5+T0.5 pair makes them the latest spectral type objects amenable to contemporaneous TESS monitoring and high fidelity ground-based observations.  Previously, Hubble Space Telescope spectroscopy resolving the $0.3''$ binary angular separation showed that Luhman 16 A has weak to no variability but Luhman 16 B has a $>10\%$ variability in the near infrared (Buenzli et al. 2015).  It was not clear what the TESS lightcurve would show.  Remarkably, the Sector 10 TESS lightcurve of Luhman 16 pinpointed the 5.28 hour rotation period of Luhman 16B and revealed global peak-to-valley cloud-induced variations over 25 days exceeding 15\% (Figure 1).  Conspicuous long-term variations convey cloud pattern changes driven by atmospheric circulation, signaling a new era of photometric data quality on these timescales.  The cloud opacity, thickness, and particle size remain unknown due to the lack of chromatic information.  
 
 Gemini did not observe Luhman 16 contemporaneously with TESS Sector 10 (March 26 - April 22, 2019).  We missed a key opportunity, but will not miss it this time-- simultaneous TESS monitoring yields the exact rotational phase, and when coupled with high-resolution spectroscopy, we can disentangle the A/B components and variability by observing the spectral changes due to variations in cloud opacities.
 
-Here we propose multi-epoch IGRINS observations contemporaneous with continuous TESS Sector 36 monitoring, from March 8 - March 18, 2021.  The epochs can be scheduled randomly during this 10 day window, easing their burden on the queue.  With at least five epochs---and TESS-Sector-10-like modulations---we expect to sample a flux range of $\sim 8\%$ (Figure 2), corresponding to a cloud coverage change large enough to detect with IGRINS with $S/N\sim100$.  The IGRINS spectra will be unresolved under typical seeing conditions.  We will decompose the IGRINS spectra into three components (Buenzli et al. 2015): 1) Luhman 16A, assumed non-variable; 2) Luhman 16B clouds; and 3) Luhman 16B cloud-free.  The composite three-component model must resemble the observed IGRINS spectra \emph{while simultaneously reproducing the observed flux deficits in the red-optical TESS band}.  This requirement is vastly more stringent than multi-epoch IGRINS spectra in isolation; it guides our interpretation and seamlessly transforms our ability to constrain cloud properties. 
+Here we propose multi-epoch IGRINS observations contemporaneous with continuous TESS Sector 36 monitoring, from March 8 - March 18, 2021.  The epochs can be scheduled randomly during this 10 day window, easing their burden on the queue.  With at least five epochs---and TESS-Sector-10-like modulations---we expect to sample a flux range of $\sim 8\%$ (Figure 2), corresponding to a cloud coverage change large enough to detect with IGRINS with $S/N\sim100$.  The IGRINS spectra will be unresolved under typical seeing conditions.  We will decompose the IGRINS spectra into three components (Buenzli et al. 2015): 1) Luhman 16A, assumed non-variable; 2) Luhman 16B clouds; and 3) Luhman 16B cloud-free.  The composite three-component model must resemble the observed IGRINS spectra \emph{while simultaneously reproducing the observed flux deficits in the red-optical TESS band}.  This requirement is vastly more stringent than multi-epoch IGRINS spectra in isolation; it guides our interpretation and transforms our ability to constrain cloud properties. 
 
 One of the biggest unsolved problems in brown dwarf evolution remains the triggering mechanism responsible for the rapid clearing of clouds in the L-T transition phase.  Luhman 16AB offers an ideal laboratory for solving the L-T transition problem: it is a binary with one object on each side of the transition, it is variable, and it is 2 pc away. No other such objects exist. This proposed DDT program stands to catapult our field by providing a line-by-line decomposition of the spectrum of clouds across the entire $H-$ and $K-$ bands, where most of the flux escapes these ultracool dwarfs.  Our field's biggest unsolved problem can only be understood after we can accurately account for cloud physical chemistry.  Importantly, these spectra will have tremendous archival legacy value for decades to come, with the prospect for snapshot image reconstruction of the stellar surface, leveraging both the TESS lightcurve and IGRINS line profile perturbations.
 
@@ -89,7 +89,6 @@ One of the biggest unsolved problems in brown dwarf evolution remains the trigge
 
 
 
-
 \clearpage
 
 \begin{figure}[ht!]
@@ -109,7 +108,7 @@ One of the biggest unsolved problems in brown dwarf evolution remains the trigge
     \centering{\includegraphics[scale=0.45]{figures/intuition_demo01.png}}  
 
     \centering{\includegraphics[scale=0.45]{figures/intuition_demo02.png}}
-    \caption{Demo of the \texttt{intuition} framework that provides human-in-the-loop fitting of IGRINS spectra to self-consistent physical models of brown dwarfs.  In these snapshots, a user has decreased the $T_{\mathrm{eff}}$ by 100 K from top to bottom panels, resulting in a different spectral appearance at 1.705 and 1.722 $\mu m$.  The user can currently tune intrinsic properties like surface gravity ($\log{g}$), and extrinsic kinematic properties like radial velocity and projected equatorial rotational broadening.  We will add additional sliders for the interpretation of this proposal:  component B's $T_{\mathrm{eff}}$ and $\log{g}$, and experimental prescriptions for component B's cloud propertiers including but not limited to filling factor, characteristic temperature of clouds, and cloud gain sedimentation efficiency $f_{\mathrm{sed}}$.  The simplicity of this framework leverages proven human pattern matching and provides resilience against brittle optimization code that tends to overfit model imperfections.  This simplicity yields the ability to produce results quickly.  }
+    \caption{Demo of the \texttt{intuition} framework that provides human-in-the-loop fitting of IGRINS spectra to self-consistent physical models of brown dwarfs.  We will use two complementary approaches to analyze the IGRINS spectra: a Bayesian MCMC approach called Starfish (not shown) and this human-in-the-loop approach.  This quick-look tool provides crucial initial guesses and physical insight.  In these snapshots, a user has decreased the $T_{\mathrm{eff}}$ by 100 K from top to bottom panels, instantaneously resulting in a different spectral appearance at 1.705 and 1.722 $\mu m$.  Both approaches employ the Sonora pre-computed synthetic spectral models, depicted here.  The powerful combination of these approaches accelerates the analysis phase of the project.}
 \end{figure}
 
   
@@ -213,8 +212,8 @@ This program coordinates with the NASA TESS extended mission.  All lightcurves f
 \begin{tabular}{lll}
 NOAO Proposal ID & Gemini ID & Status \\
 ================ & ========= & ====== \\
-- & GS-2020B-Q-318  & Data obtained in Dec 2020, reduction underway. \\
- & GS-2021A-Q-311 & Data collection in progress, reduction underway. \\
+- & GS-2020B-Q-318  & Data obtained, reduction underway. \\
+ & GS-2021A-Q-311 & Data collection in progress \\
 \end{tabular}
  
 All data from Gemini South have been acquired in the last 3 months, and are currently being analyzed.  
@@ -308,8 +307,7 @@ We used the exposure time calculator from the IGRINS At Gemini website:
 
 https://sites.google.com/site/igrinsatgemini/proposing-and-observing
 
-For $K=8.8$ we expect and IQ70, we expect 220 second exposure times.  For an ABBA quad, that is 15 minutes of on-sky integration time.  With 5 visits and overhead we expect a grand total of 1.5 hours of program time.  
-
+For $K=8.8$ and IQ70, we expect 220 second exposure times.  For an ABBA quad, that is 15 minutes of on-sky integration time.  With 5 visits and overhead we expect a grand total of 1.5 hours of program time.  We are requesting a goal of 2.5 hours, and minimum of 1.5 hours, in hopes to obtain some nights with multiple visits per night as described in the experimental design.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Please do not modify or delete this line.
