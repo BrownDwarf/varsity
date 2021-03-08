@@ -132,3 +132,5 @@ dmypy.json
 .envrc
 data/TESS/
 figures/
+# autogenerate with `make`
+proposal/2021A/DDT/tess_luhman16/final
