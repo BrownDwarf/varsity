@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<proposal schemaVersion="2021.1.3" tacCategory="Stars and stellar evolution">
+    <meta band3optionChosen="true" overrideAffiliate="false">
+        <attachment>/home/gully/GitHub/varsity/proposal/2021A/DDT/tess_luhman16/final/Luhman16_TESS_March2021_DDT_draft5.pdf</attachment>
+    </meta>
+    <semester year="2021" half="A"/>
+    <title>Disentangling condensate clouds with contemporaneous IGRINS and TESS monitoring</title>
+    <abstract>Condensate clouds on brown dwarfs remain one of the largest unsolved problems in substellar evolution.  The rapid clearing of clouds might control the unusually fast L-T Transition.  Here we propose contemporaneous monitoring of an L-T transition binary, with IGRINS and TESS.  Luhman 16AB is the Sun's third closest neighbor and by far the best laboratory for understanding clouds.  With at least 5 epochs of IGRINS from March 8 - 18, 2021, we can faithfully disambiguate the component A, the cloud-free surface of B, and the clouds on B.  This TESS-coordinated dataset will possess tremendous legacy value for decades, and stands to catalyze a major step forward for the physical chemistry and atmospheric dynamics of clouds on brown dwarfs and large exoplanets.</abstract>
+    <scheduling>Must be observed March 8 - March 18, 2021 to coordindate with TESS monitoring.  Five nights of visits at any time in that window, with the preference for a second re-visit within the night, for three of those five nights.</scheduling>
+    <keywords>
+        <keyword>Solar neighborhood</keyword>
+        <keyword>Variable stars</keyword>
+        <keyword>Atmospheres</keyword>
+        <keyword>Brown dwarfs</keyword>
+    </keywords>
+    <investigators>
+        <pi id="investigator-0">
+            <firstName>Michael</firstName>
+            <lastName>Gully-Santiago</lastName>
+            <status>PhD</status>
+            <gender>Man</gender>
+            <email>igully@utexas.edu</email>
+            <phone>617-842-5905</phone>
+            <address>
+                <institution>University of Texas at Austin</institution>
+                <address>Department of Astronomy
+1 University Station C-1400
+Austin
+TX
+78712</address>
+                <country>USA</country>
+            </address>
+        </pi>
+        <coi id="investigator-1">
+            <firstName>Caroline</firstName>
+            <lastName>Morley</lastName>
+            <status>PhD</status>
+            <gender>Woman</gender>
+            <email>cmorley@utexas.edu</email>
+            <phone></phone>
+            <institution>University of Texas at Austin</institution>
+        </coi>
+        <coi id="investigator-2">
+            <firstName>Yifan</firstName>
+            <lastName>Zhou</lastName>
+            <status>PhD</status>
+            <gender>Man</gender>
+            <email>yifan.zhou@utexas.edu</email>
+            <phone></phone>
+            <institution>University of Texas at Austin</institution>
+        </coi>
+        <coi id="investigator-3">
+            <firstName>Will</firstName>
+            <lastName>Best</lastName>
+            <status>PhD</status>
+            <gender>Man</gender>
+            <email>wbest@utexas.edu</email>
+            <phone></phone>
+            <institution>University of Texas at Austin</institution>
+        </coi>
+        <coi id="investigator-4">
+            <firstName>Brendan</firstName>
+            <lastName>Bowler</lastName>
+            <status>PhD</status>
+            <gender>Man</gender>
+            <email>bpbowler@astro.as.utexas.edu</email>
+            <phone></phone>
+            <institution>University of Texas at Austin</institution>
+        </coi>
+    </investigators>
+    <targets>
+        <sidereal epoch="J2000" id="target-0">
+            <name>Luhman 16</name>
+            <degDeg>
+                <ra>162.32881399999996574479155242443084716796875</ra>
+                <dec>-53.31946599999997715713107027113437652587890625</dec>
+            </degDeg>
+            <properMotion deltaRA="-2759.0" deltaDec="354.0"/>
+            <magnitudes>
+                <magnitude band="B" system="Vega">16.860000610351562</magnitude>
+                <magnitude band="V" system="Vega">16.200000762939453</magnitude>
+                <magnitude band="J" system="Vega">10.732999801635742</magnitude>
+                <magnitude band="H" system="Vega">9.562999725341797</magnitude>
+                <magnitude band="K" system="Vega">8.840999603271484</magnitude>
+            </magnitudes>
+        </sidereal>
+    </targets>
+    <conditions>
+        <condition id="condition-0">
+            <name>CC Any, IQ 70%/Good, SB Any/Bright, WV Any</name>
+            <cc>Any</cc>
+            <iq>70%/Good</iq>
+            <sb>Any/Bright</sb>
+            <wv>Any</wv>
+        </condition>
+    </conditions>
+    <blueprints>
+        <igrins>
+            <Igrins id="blueprint-0">
+                <name>IGRINS</name>
+                <visitor>true</visitor>
+            </Igrins>
+        </igrins>
+    </blueprints>
+    <observations>
+        <observation band="Band 1/2" enabled="true" target="target-0" condition="condition-0" blueprint="blueprint-0">
+            <progTime units="hr">0.25</progTime>
+            <partTime units="hr">0.05</partTime>
+            <time units="hr">0.3</time>
+            <meta ck="">
+                <guiding>
+                    <percentage>100</percentage>
+                    <evaluation>Success</evaluation>
+                </guiding>
+                <visibility>Good</visibility>
+                <gsa>0</gsa>
+            </meta>
+        </observation>
+        <observation band="Band 1/2" enabled="true" target="target-0" condition="condition-0" blueprint="blueprint-0">
+            <progTime units="hr">0.25</progTime>
+            <partTime units="hr">0.05</partTime>
+            <time units="hr">0.3</time>
+            <meta ck="">
+                <guiding>
+                    <percentage>100</percentage>
+                    <evaluation>Success</evaluation>
+                </guiding>
+                <visibility>Good</visibility>
+                <gsa>0</gsa>
+            </meta>
+        </observation>
+        <observation band="Band 1/2" enabled="true" target="target-0" condition="condition-0" blueprint="blueprint-0">
+            <progTime units="hr">0.25</progTime>
+            <partTime units="hr">0.05</partTime>
+            <time units="hr">0.3</time>
+            <meta ck="">
+                <guiding>
+                    <percentage>100</percentage>
+                    <evaluation>Success</evaluation>
+                </guiding>
+                <visibility>Good</visibility>
+                <gsa>0</gsa>
+            </meta>
+        </observation>
+        <observation band="Band 1/2" enabled="true" target="target-0" condition="condition-0" blueprint="blueprint-0">
+            <progTime units="hr">0.25</progTime>
+            <partTime units="hr">0.05</partTime>
+            <time units="hr">0.3</time>
+            <meta ck="">
+                <guiding>
+                    <percentage>100</percentage>
+                    <evaluation>Success</evaluation>
+                </guiding>
+                <visibility>Good</visibility>
+                <gsa>0</gsa>
+            </meta>
+        </observation>
+        <observation band="Band 1/2" enabled="true" target="target-0" condition="condition-0" blueprint="blueprint-0">
+            <progTime units="hr">0.25</progTime>
+            <partTime units="hr">0.05</partTime>
+            <time units="hr">0.3</time>
+            <meta ck="">
+                <guiding>
+                    <percentage>100</percentage>
+                    <evaluation>Success</evaluation>
+                </guiding>
+                <visibility>Good</visibility>
+                <gsa>0</gsa>
+            </meta>
+        </observation>
+        <observation band="Band 1/2" enabled="true" target="target-0" condition="condition-0" blueprint="blueprint-0">
+            <progTime units="hr">0.25</progTime>
+            <partTime units="hr">0.05</partTime>
+            <time units="hr">0.3</time>
+            <meta ck="">
+                <guiding>
+                    <percentage>100</percentage>
+                    <evaluation>Success</evaluation>
+                </guiding>
+                <visibility>Good</visibility>
+                <gsa>0</gsa>
+            </meta>
+        </observation>
+        <observation band="Band 1/2" enabled="true" target="target-0" condition="condition-0" blueprint="blueprint-0">
+            <progTime units="hr">0.25</progTime>
+            <partTime units="hr">0.05</partTime>
+            <time units="hr">0.3</time>
+            <meta ck="">
+                <guiding>
+                    <percentage>100</percentage>
+                    <evaluation>Success</evaluation>
+                </guiding>
+                <visibility>Good</visibility>
+                <gsa>0</gsa>
+            </meta>
+        </observation>
+        <observation band="Band 1/2" enabled="true" target="target-0" condition="condition-0" blueprint="blueprint-0">
+            <progTime units="hr">0.25</progTime>
+            <partTime units="hr">0.05</partTime>
+            <time units="hr">0.3</time>
+            <meta ck="">
+                <guiding>
+                    <percentage>100</percentage>
+                    <evaluation>Success</evaluation>
+                </guiding>
+                <visibility>Good</visibility>
+                <gsa>0</gsa>
+            </meta>
+        </observation>
+    </observations>
+    <proposalClass>
+        <special key="13d0172f-a9b6-4b3c-96ab-aeddefaa64e1">
+            <submission>
+                <request>
+                    <time units="hr">2.4</time>
+                    <minTime units="hr">1.5</minTime>
+                </request>
+                <response>
+                    <receipt>
+                        <timestamp>2021-03-05T22:25:04.000Z</timestamp>
+                        <id>DT-2021A-015</id>
+                        <contact>phase1help@gemini.edu</contact>
+                    </receipt>
+                </response>
+                <type>Directors Time</type>
+            </submission>
+        </special>
+    </proposalClass>
+</proposal>
