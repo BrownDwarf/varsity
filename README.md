@@ -5,6 +5,8 @@ Multi-epoch time series monitoring of variable brown dwarfs for spectral decompo
 ### Authors:
 - Michael Gully-Santiago (UT Austin)
 - Caroline Morley (UT Austin)
-- *TBD*
+- Yifan Zhou (UT Austin)
+- Will Best (UT Austin)
+- Brendan Bowler (UT Austin)
 
 Copyright @gully 2021, All Rights Reserved
