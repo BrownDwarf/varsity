@@ -27,6 +27,7 @@ dependencies:
   - scikit-learn
   - scikit-image
   - astroplan
+  - exoplanet # needed for orbit prediction
   - pip
   # - reproject # conda-forge
   ## We need SEP, but it is flakey with conda, so manually install:
@@ -41,6 +42,6 @@ dependencies:
   # Need to install Montage: https://github.com/Caltech-IPAC/Montage
   - pip:
       - twisted
-      - mkl-random
+      #- mkl-random
       - emcee
       - corner
