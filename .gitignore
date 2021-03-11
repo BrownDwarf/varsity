@@ -136,3 +136,6 @@ figures/
 # autogenerate with `make`
 proposal/2021A/DDT/tess_luhman16/final
 talks/
+
+# Ignore pdf of the paper
+document/paper1/final
