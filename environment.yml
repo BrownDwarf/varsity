@@ -15,7 +15,7 @@ dependencies:
   - pandas
   - lightkurve >2.0
   - oktopus # from conda-forge channel
-  - bokeh
+  - bokeh<2.3
   - jupyter
   - anaconda
   - celerite
