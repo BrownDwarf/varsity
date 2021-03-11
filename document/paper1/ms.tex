@@ -1,0 +1,84 @@
+\documentclass{aastex63}
+\bibliographystyle{aasjournal}
+
+\usepackage{graphicx}
+%\usepackage[caption=false]{subfig}
+\usepackage{amsmath}
+\usepackage{booktabs}
+
+\usepackage{fontspec}
+\usepackage[T1]{fontenc}
+\usepackage{newtxsf}
+\setmainfont{Fira Sans Book}[Scale=1.05]
+
+\let\pwiflocal=\iffalse \let\pwifjournal=\iffalse
+
+\begin{document}
+\shorttitle{Brown dwarf clouds with TESS and IGRINS}
+\shortauthors{Gully-Santiago et al. }
+\title{Disentangling brown dwarf clouds with IGRINS and contemporaneous TESS monitoring}
+
+\author{Michael Gully-Santiago}
+\affiliation{University of Texas at Austin Department of Astronomy}
+
+\author{TBD}
+\affiliation{TBD}
+
+
+\begin{abstract}
+
+We disentangle clouds on the nearby brown dwarf Luhman 16 using multi-epoch IGRINS with contemporaneous TESS monitoring.
+
+\end{abstract}
+
+\keywords{High resolution spectroscopy (2096)}
+
+\section{Introduction}\label{sec:intro}
+
+
+\section{Methodology}
+We used IGRINS \citep{park14,2018SPIE10702E..0QM}, reduced with the \texttt{plp} \citep{jaejoonlee16}.
+
+
+
+\acknowledgements
+Based on observations obtained at the international Gemini Observatory, a program of NSF’s NOIRLab, which is managed by the Association of Universities for Research in Astronomy (AURA) under a cooperative agreement with the National Science Foundation. on behalf of the Gemini Observatory partnership: the National Science Foundation (United States), National Research Council (Canada), Agencia Nacional de Investigaci\'{o}n y Desarrollo (Chile), Ministerio de Ciencia, Tecnolog\'{i}a e Innovaci\'{o}n (Argentina), Minist\'{e}rio da Ci\^{e}ncia, Tecnologia, Inova\c{c}\~{o}es e Comunica\c{c}\~{o}es (Brazil), and Korea Astronomy and Space Science Institute (Republic of Korea).
+
+This work used the Immersion Grating Infrared Spectrometer (IGRINS) that was developed under a collaboration between the University of Texas at Austin and the Korea Astronomy and Space Science Institute (KASI) with the financial support of the Mt. Cuba Astronomical Foundation, of the US National Science Foundation under grants AST-1229522 and AST-1702267, of the McDonald Observatory of the University of Texas at Austin, of the Korean GMT Project of KASI, and Gemini Observatory.
+
+This paper includes data collected by the TESS mission. Funding for the TESS mission is provided by the NASA's Science Mission Directorate.
+
+The authors acknowledge the Texas Advanced Computing Center (TACC, \url{http://www.tacc.utexas.edu}) at The University of Texas at Austin for providing HPC resources that have contributed to the research results reported within this paper.
+
+\clearpage
+
+
+\facilities{Keck (NIRSPEC), Gaia}
+
+\software{  pandas \citep{mckinney10, reback2020pandas},
+  emcee \citep{foreman13},
+  matplotlib \citep{hunter07},
+  astroplan \citep{astroplan2018},
+  astropy \citep{exoplanet:astropy13,exoplanet:astropy18},
+  exoplanet \citep{exoplanet:exoplanet},
+  numpy \citep{harris2020array},
+  scipy \citep{jones01},
+  ipython \citep{perez07},
+  starfish \citep{czekala15},
+  bokeh \citep{bokehcite},
+  seaborn \citep{waskom14}}
+  %pytorch \citep{NEURIPS2019_9015}} % No pytorch yet!
+
+
+\bibliography{ms}
+
+
+\clearpage
+
+\appendix
+\restartappendixnumbering
+
+\section{Assumptions about cloud spectra} \label{appendix:clouds}
+
+Here are some more details about how we describe clouds.
+\end{document}
