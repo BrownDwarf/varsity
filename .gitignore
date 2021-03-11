@@ -131,6 +131,8 @@ dmypy.json
 # Custom changes for this project:
 .envrc
 data/TESS/
+data/HST/
 figures/
 # autogenerate with `make`
 proposal/2021A/DDT/tess_luhman16/final
+talks/
