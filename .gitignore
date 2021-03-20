@@ -139,3 +139,7 @@ talks/
 
 # Ignore pdf of the paper
 document/paper1/final
+
+# Ignore large IGRINS data
+# Instructions for retrieving data are in the data folder README.
+data/IGRINS/originals
