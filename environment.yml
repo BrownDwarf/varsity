@@ -18,7 +18,7 @@ dependencies:
   - bokeh<2.3
   - jupyter
   - anaconda
-  - celerite
+  - celerite2
   - fitsio
   - ipython
   - seaborn
@@ -45,3 +45,4 @@ dependencies:
       #- mkl-random
       - emcee
       - corner
+      - muler
