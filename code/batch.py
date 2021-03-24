@@ -9,6 +9,7 @@ import pandas as pd
 import json
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
+from muler.igrins import IGRINSSpectrumList
 
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -16,7 +17,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 import argparse
 parser = argparse.ArgumentParser(prog="batch.py", description="Batch common starfish tasks")
 parser.add_argument("--run_num", type=int, default=None, help="Which run_number, defaults to run01")
-parser.add_argument("--convert_csv_to_hdf5_files", action="store_true", help="Convert csv .dat files to HDF5 files")
+parser.add_argument("--convert_fits_to_hdf5_files", action="store_true", help="Convert csv .dat files to HDF5 files")
 parser.add_argument("--set_wl_lims", action="store_true", help="Set the wavelength limits of the spectra")
 parser.add_argument("--config", action="store_true", help="Generate config files")
 parser.add_argument("--grid_create", action="store_true", help="Run grid.py create")
@@ -38,112 +39,6 @@ src_dict = {'luhman16A_btjd_2285p65':'GS-2021A-DD-104/20210311/reduced/SDC{}_202
 sources = ['luhman16A_btjd_2285p65']
 orders = [103, 104, 105]
 run_num = args.run_num
-
-def estimate_homoscedastic_noise(flux_vector, kernel=7):
-    '''estimate the noise_vector from data alone'''
-    scatter = flux_vector - medfilt(flux_vector, kernel_size=kernel)
-    noise_vector = np.std(scatter) * np.ones(len(scatter))
-    return noise_vector
-
-def clean_orders(source, band):
-    """Returns a cleaned data cube: wl, flux, error
-        Propagates uncertainty from A0V flux division
-    """
-    # map_xl = os.path.expandvars("$varsity/data/Spectral_epoch_mapping.xlsx")
-    # df = pd.read_excel(map_xl, sheet_name="mapping")
-    # df = df[df.source == source]
-
-    # num_targ = "{:04d}".format(df["targ_num"].iloc[0])
-    # date = df["igrins_dir"].iloc[0]
-
-    dir1 = os.path.expandvars("$varsity/data/IGRINS/originals/")
-
-    filepath = src_dict[source].format(band)
-    hdus = fits.open(dir1 + filepath)
-    hdu2 = fits.open(dir1 + filepath.replace('spec_a0v', 'sn'))
-
-    f_star = hdus["SPEC_DIVIDE_A0V"].data
-    sig_star = f_star / hdu2[0].data
-    wl_angs = hdus["WAVELENGTH"].data * 10_000.0
-
-    # Hardcoded limits-- echellogram is weighted to one side, trim the waste
-    lft, rgt = 450, 1950
-
-    wl_angs = wl_angs[:, lft:rgt]
-    f_star = f_star[:, lft:rgt]
-    sig_star = sig_star[:, lft:rgt]
-
-    # use the center of middle order as the fiducial for Global normalization
-    mid = 14
-    scalar = np.nanmedian(f_star[mid, :])
-
-    return (wl_angs, f_star / scalar, sig_star / scalar)
-
-
-def convert_fits_to_hdf5_files(source, band):
-    """Convert the .fits files to .hdf5 files needed for Starfish"""
-    wl_angs, f_star, sig_star = clean_orders(source, band)
-
-    n_orders = len(f_star[:, 0])
-    grating_order_offsets = {"H": 98, "K": 71}
-    str_path = "$varsity/data/semi_processed_spectra/{}_m{:03d}.hdf5"
-
-    for o in range(n_orders):
-        m = o + grating_order_offsets[band]
-        out_name = os.path.expandvars(str_path.format(source, m))
-        # Drop all NaNs
-        fls_out = f_star[o, :]
-        sig_out = sig_star[o, :]
-        keep_mask = ~((fls_out != fls_out) | (sig_out != sig_out) | (sig_out < 0.0))
-        fls_out = fls_out[keep_mask]
-        sig_out = sig_out[keep_mask]
-        wls_out = wl_angs[o, :][keep_mask]
-        msk_out = np.ones(len(wls_out), dtype=int)
-        f_new = h5py.File(out_name, "w")
-        f_new.create_dataset("fls", data=fls_out)
-        f_new.create_dataset("wls", data=wls_out)
-        f_new.create_dataset("sigmas", data=sig_out)
-        f_new.create_dataset("masks", data=msk_out)
-        f_new.close()
-
-
-def scrub_outliers(source):
-    df = pd.DataFrame()
-    for order in orders:
-        hf = h5py.File(
-            "../data/semi_processed_spectra/{}_m{:03d}.hdf5".format(source, order),
-            mode="r",
-        )
-        df_m = pd.DataFrame({key: np.array(hf[key]) for key in hf.keys()})
-        df_m["order"] = order
-        df = df.append(df_m, ignore_index=True)
-        hf.close()
-
-    df = df.sort_values("wls")
-    # fl_smoothed = medfilt(df.fls, kernel_size=5)
-    # resid = df.fls - fl_smoothed
-    # deviation = resid / df["sigmas"]
-
-    # bi = ( (deviation > 6.0) | (deviation < -6.0) | (resid > 2.0) | (resid < -2.0) |
-    #  (df.sigmas >0.15) | df.sigmas.isnull() | (df.sigmas < 0.0) )
-    bi = (df.fls > 1e6) | df.sigmas.isnull() | (df.sigmas < 0.0)
-
-    bad_wls = df.wls[bi].values
-
-    for order in orders:
-        hf = h5py.File(
-            "../data/semi_processed_spectra/{}_m{:03d}.hdf5".format(source, order),
-            mode="r",
-        )
-        hf_out = h5py.File(
-            "../data/processed_spectra/{}_m{:03d}.hdf5".format(source, order), mode="w"
-        )
-        outliers = np.isin(hf["wls"].value, bad_wls)
-        for key in hf.keys():
-            vec = hf[key].value
-            hf_out[key] = vec[~outliers]
-        hf.close()
-        hf_out.close()
 
 
 def modify_and_save_excel_file(source, order, keyword, new_value):
@@ -402,17 +297,13 @@ def diagnose(source, order, run_num):
 
 if args.convert_fits_to_hdf5_files:
     for source in sources:
-        print(source)
         for band in ["H", "K"]:
-            print(band)
-            convert_fits_to_hdf5_files(source, band)
-    # Iterative
-    for source in sources:
-        print(source)
-        for band in ["H", "K"]:
-            print(band)
-            convert_fits_to_hdf5_files(source, band)
-            scrub_outliers(source)
+            directory = os.path.expandvars('$varsity/data/IGRINS/originals/')
+            filename = src_dict[source].format(band)
+            full_path = directory + filename
+            print(full_path)
+            spec = IGRINSSpectrumList.read(full_path)
+            spec = spec.normalize().remove_nans().trim_edges()
 
 ## Main program
 for source in sources:
