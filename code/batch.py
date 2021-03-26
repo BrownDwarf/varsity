@@ -79,22 +79,27 @@ src_dict = {
 }  # hardcoded for now
 
 sources = ["luhman16A_btjd_2285p65"]
-orders = [103, 104, 105]
+H_band_orders = np.arange(125, 98 - 1, -1).tolist()
+K_band_orders = np.arange(95, 71 - 1, -1).tolist()
+orders = H_band_orders + K_band_orders
+orders = [110]
 run_num = args.run_num
 
 
 def modify_and_save_excel_file(source, order, keyword, new_value):
     """Read in entire Excel file, change single entry, and resave"""
     db_init_file = os.path.expandvars("$varsity/db/varsity_init.xlsx")
-    xlf = pd.ExcelFile(db_init_file)
+    xlf = pd.ExcelFile(db_init_file, engine="openpyxl")
     sheets = xlf.sheet_names
     xlf.close()
-    writer = pd.ExcelWriter(db_init_file)
+    writer = pd.ExcelWriter(db_init_file, engine="openpyxl")
     for sheet in sheets:
-        df = pd.read_excel(db_init_file, sheet_name=sheet, index_col=0)
+        df = pd.read_excel(
+            db_init_file, sheet_name=sheet, index_col=0, engine="openpyxl"
+        )
         if sheet == source:
             df.at[keyword, "m{:03d}".format(order)] = new_value
-        df.to_excel(writer, sheet_name=sheet)
+        df.to_excel(writer, sheet_name=sheet, engine="openpyxl")
     writer.save()
 
 
@@ -120,7 +125,7 @@ def generate_s0_o0phi_file(source, order, run_num):
         jf = json.load(f)
 
     db_init_file = os.path.expandvars("$varsity/db/varsity_init.xlsx")
-    df = pd.read_excel(db_init_file, sheet_name=source, index_col=0)
+    df = pd.read_excel(db_init_file, sheet_name=source, index_col=0, engine="openpyxl")
 
     jf["sigAmp"] = float(df[m]["sigAmp"])
     jf["logAmp"] = float(df[m]["logAmp"])
@@ -145,10 +150,10 @@ def generate_config_yaml(source, order, run_num=None):
     f.close()
 
     db_init_file = os.path.expandvars("$varsity/db/varsity_init.xlsx")
-    df = pd.read_excel(db_init_file, sheet_name=source, index_col=0)
+    df = pd.read_excel(db_init_file, sheet_name=source, index_col=0, engine="openpyxl")
 
     config["data"]["files"] = [
-        "$varsity/data/homoscedastic/{}_{:03d}.hdf5".format(source, order)
+        "$varsity/data/IGRINS/processed/{}_m{:03d}.hdf5".format(source, order)
     ]
     config["grid"][
         "hdf5_path"
@@ -236,8 +241,10 @@ def revise_nuisance_params(source, order, run_num=1):
     df_spec = pd.read_csv("spec_config.csv")
 
     db_init_file = os.path.expandvars("$varsity/db/varsity_init.xlsx")
-    df_init = pd.read_excel(db_init_file, sheet_name=source, index_col=0)
-    m = "m{:02}".format(order)
+    df_init = pd.read_excel(
+        db_init_file, sheet_name=source, index_col=0, engine="openpyxl"
+    )
+    m = "m{:03}".format(order)
     logOmega_delta = np.log10(
         df_spec["model_composite"].median() / df_spec["data"].median()
     )
@@ -258,9 +265,9 @@ def set_wl_lims(source, order):
     #            delim_whitespace=True, names = ['wl_um', 'flux'])
 
     # Make outname based on the basename
-    file_name = "{}_{:03d}.hdf5".format(source, order)
+    file_name = "{}_m{:03d}.hdf5".format(source, order)
 
-    out_path = os.path.expandvars("$varsity/data/homoscedastic/")
+    out_path = os.path.expandvars("$varsity/data/IGRINS/processed/")
     file = h5py.File(out_path + file_name, "r")
 
     wl_lo, wl_hi = (file["wls"][j] for j in [0, -1])
@@ -309,7 +316,7 @@ def write_user_prior(source, order, run_num=None):
     ]
 
     db_init_file = os.path.expandvars("$varsity/db/varsity_init.xlsx")
-    df = pd.read_excel(db_init_file, sheet_name=source, index_col=0)
+    df = pd.read_excel(db_init_file, sheet_name=source, index_col=0, engine="openpyxl")
     # for now we only support source-level priors.  order-level priors is possible.
     fmt_dict = {
         "Teff": "{:.0f}",
@@ -439,7 +446,7 @@ for source in sources:
 
         if args.run_Starfish:
             run_Starfish(
-                source, order, run_num=run_num, samples=5000, incremental_save=50
+                source, order, run_num=run_num, samples=5000, incremental_save=10
             )
 
         if args.qsub_PBS:

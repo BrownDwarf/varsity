@@ -3,13 +3,13 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - python=3.7
+  - python=3.6
   - numpy
   - scipy
   - matplotlib
   - astroquery # from conda-forge channel
   - beautifulsoup4
-  - astropy
+  - astropy>=4.1
   - requests
   - tqdm
   - pandas
@@ -26,6 +26,7 @@ dependencies:
   - photutils # from conda-forge?
   - scikit-learn
   - scikit-image
+  - yaml
   - astroplan
   - exoplanet # needed for orbit prediction
   - pip
@@ -45,4 +46,4 @@ dependencies:
       #- mkl-random
       - emcee
       - corner
-      - muler
+      # - muler # Install developer version
