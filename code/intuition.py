@@ -180,21 +180,6 @@ def create_interact_ui(doc):
         )
     )
 
-    def renormalize_and_sync_flux_levels():
-        """Renormalize to the data median every time the model changes"""
-        scalar_constant = np.median(spec_source_net.data["flux"])
-        spec_source_net.data["flux"] = spec_source_net.data["flux"] / scalar_constant
-        spec_source.data["flux"] = spec_source.data["flux"] / scalar_constant
-        spec_source.data["native_flux"] = (
-            spec_source.data["native_flux"] / scalar_constant
-        )
-        spec_source_cloud.data["flux"] = (
-            spec_source_cloud.data["flux"] / scalar_constant
-        )
-        spec_source_cloud.data["native_flux"] = (
-            spec_source_cloud.data["native_flux"] / scalar_constant
-        )
-
     spec_sources = {True: spec_source_cloud, False: spec_source}
 
     fig = figure(
