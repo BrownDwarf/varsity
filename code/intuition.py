@@ -4,6 +4,7 @@ import bokeh
 import glob
 import astropy.units as u
 import tqdm
+from muler.igrins import IGRINSSpectrum
 
 from bokeh.io import show, output_notebook, push_notebook
 from bokeh.plotting import figure, ColumnDataSource
@@ -60,7 +61,7 @@ def get_lookup_dictionaries(fns, cloudy=True):
     return (g_lookup_dict, lookup_dict)
 
 
-def load_and_prep_spectrum(fn, wl_low=2.1, wl_high=2.13, downsample=4):
+def load_and_prep_spectrum(fn, wl_low=2.108, wl_high=2.134, downsample=4):
     df_native = pd.read_csv(fn,
                             skiprows=[0, 1],
                             delim_whitespace=True,
@@ -100,6 +101,13 @@ for i, teff in enumerate(teff_points):
 
 def create_interact_ui(doc):
 
+    ### data
+
+    reduced_fns = glob.glob('../../data/IGRINS/originals/GS-2021A-DD-104/*/reduced/SDCK*.spec_a0v.fits')
+    spec1 = IGRINSSpectrum(file=reduced_fns[1], order=13).remove_nans().normalize()
+
+    ### Models
+
     models_path = '/home/gully/GitHub/varsity/models/models_forGully/'
     suffixes={False:'_cloudfree.spec', True:'.spec'}
     ## Make the spectrum sources
@@ -116,7 +124,7 @@ def create_interact_ui(doc):
     df_cloud = load_and_prep_spectrum(models_path+base_name, downsample=4)
 
     # Fixed normalization constant for all spectra
-    scalar_norm = np.percentile(df_nir.flux.values, 95)
+    scalar_norm = np.percentile(df_nir.flux.values, 50)
 
     spec_source = ColumnDataSource(
         data=dict(
@@ -133,6 +141,13 @@ def create_interact_ui(doc):
             flux=gaussian_filter1d(df_cloud.flux.values/scalar_norm, 0.1),
             native_flux = df_cloud.flux.values / scalar_norm,
             native_wavelength = df_cloud.wavelength.values
+        )
+    )
+
+    spec_source_data = ColumnDataSource(
+        data=dict(
+            wavelength=spec1.wavelength.value/10_000,
+            flux=spec1.flux.value
         )
     )
 
@@ -164,6 +179,16 @@ def create_interact_ui(doc):
         )
 
     fig.step(
+            "wavelength",
+            "flux",
+            line_width=1,
+            color="sandybrown",
+            source=spec_source_data,
+            nonselection_line_color="sandybrown",
+            nonselection_line_alpha=1.0,
+        )
+
+    fig.step(
         "wavelength",
         "flux",
         line_width=1,
@@ -184,10 +209,10 @@ def create_interact_ui(doc):
         )
 
     vz_slider = Slider(
-            start=-0.009,
-            end=0.009,
+            start=-0.002,
+            end=0.002,
             value=0.00,
-            step=0.0005,
+            step=0.00005,
             title="Radial Velocity",
             width=490,
         format='0.000f'
@@ -223,6 +248,7 @@ def create_interact_ui(doc):
     def update_upon_vz(attr, old, new):
         """Callback to take action when vz slider changes"""
         spec_source.data["wavelength"] = spec_source.data["native_wavelength"] - new
+        spec_source_cloud.data["wavelength"] = spec_source_cloud.data["native_wavelength"] - new
         #spec_source.data["flux"] = gaussian_filter1d(df_nir.flux.values, new)
 
     def update_upon_teff_selection(attr, old, new):
@@ -240,7 +266,7 @@ def create_interact_ui(doc):
                 else:
                     df_nir = load_and_prep_spectrum(fn, downsample=4)
 
-                scalar_norm = np.percentile(df_nir.flux.values, 95)
+                scalar_norm = np.percentile(df_nir.flux.values, 50)
                 spec_sources[cloudy].data["native_wavelength"] = df_nir.wavelength.values
                 spec_sources[cloudy].data["native_flux"] = df_nir.flux.values / scalar_norm
                 spec_sources[cloudy].data["wavelength"] = df_nir.wavelength.values - vz_slider.value
@@ -262,7 +288,7 @@ def create_interact_ui(doc):
             else:
                 df_nir = load_and_prep_spectrum(fn, downsample=4)
 
-            scalar_norm = np.percentile(df_nir.flux.values, 95)
+            scalar_norm = np.percentile(df_nir.flux.values, 50)
             spec_sources[cloudy].data["native_wavelength"] = df_nir.wavelength.values
             spec_sources[cloudy].data["native_flux"] = df_nir.flux.values / scalar_norm
             spec_sources[cloudy].data["wavelength"] = df_nir.wavelength.values - vz_slider.value
