@@ -22,7 +22,7 @@ precache = False  # Toggle for caching
 # Data
 reduced_fns = glob.glob(
     "../../data/IGRINS/originals/GS-2021A-DD-104/*/reduced/SDCK*.spec_a0v.fits"
-)[1::2]
+)[0::2]
 spec1 = (
     IGRINSSpectrum(file=reduced_fns[3], order=13).remove_nans().normalize().trim_edges()
 )
@@ -86,7 +86,9 @@ def load_and_prep_spectrum(fn, wl_low=2.108, wl_high=2.134, downsample=4):
         .reset_index(drop=True)
     )
 
-    assertion_msg = "We can only model K-band clouds currently."
+    assertion_msg = "We can only model K-band clouds currently: {:0.5f}, {:0.5f}".format(
+        wl_low, wl_high
+    )
     assert (wl_low > 2.0) & (wl_high < 2.51), assertion_msg
 
     ## Standardize flux density units to cgs
@@ -130,8 +132,8 @@ def create_interact_ui(doc):
     basename = basename_constructor(np.float(teff), logg, False)
 
     # Cloud-free
-    wl_low = np.nanmin(spec1.wavelength.value)
-    wl_high = np.nanmax(spec1.wavelength.value)
+    wl_low = np.nanmin(spec1.wavelength.value / 10_000)
+    wl_high = np.nanmax(spec1.wavelength.value / 10_000)
     df_nir = load_and_prep_spectrum(
         models_path + basename, downsample=4, wl_low=wl_low, wl_high=wl_high
     )
@@ -379,12 +381,13 @@ def create_interact_ui(doc):
                     fn, downsample=4, wl_low=wl_low, wl_high=wl_high
                 )
 
-            source.data["native_wavelength"] = df_nir.wavelength.values
-            source.data["native_flux"] = df_nir.flux.values
-            source.data["wavelength"] = df_nir.wavelength.values - vz_slider.value
-            source.data["flux"] = gaussian_filter1d(
-                df_nir.flux.values, smoothing_slider.value
+            source.data = dict(
+                wavelength=df_nir.wavelength.values - vz_slider.value,
+                flux=gaussian_filter1d(df_nir.flux.values, smoothing_slider.value),
+                native_flux=df_nir.flux.values,
+                native_wavelength=df_nir.wavelength.values,
             )
+
         composite = cloud_mixture_model(ff_slider.value)
         spec_source_net.data["flux"] = composite / np.median(composite)
 
