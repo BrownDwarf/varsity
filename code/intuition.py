@@ -34,7 +34,7 @@ for i, teff in enumerate(teff_points):
     teff_dict[i] = str(teff)
 
 cloudy_suffix_dict = {False: "_cloudfree.spec", True: ".spec"}
-models_path = os.path.expandvars("$varsity/GitHub/varsity/models/models_forGully/")
+models_path = os.path.expandvars("$varsity/models/models_forGully/")
 fns_morley = sorted(glob.glob(models_path + "/t*.spec"))
 
 
@@ -124,17 +124,13 @@ def create_interact_ui(doc):
     # Initialize
     teff = 1300
     logg = 4.0
-    basename = basename_constructor(
-        np.float(teff), logg_par_dict[logg], cloudy_suffix_dict[False]
-    )
+    basename = basename_constructor(np.float(teff), logg, False)
 
     # Cloud-free
     df_nir = load_and_prep_spectrum(models_path + basename, downsample=4)
 
     # Cloudy
-    basename = basename_constructor(
-        np.float(teff), logg_par_dict[logg], cloudy_suffix_dict[True]
-    )
+    basename = basename_constructor(np.float(teff), logg, True)
     df_cloud = load_and_prep_spectrum(models_path + basename, downsample=4)
 
     # Fixed normalization constant for all spectra
@@ -275,9 +271,7 @@ def create_interact_ui(doc):
 
             for cloudy in [True, False]:
                 basename = basename_constructor(
-                    np.float(teff),
-                    logg_par_dict[logg_slider.value],
-                    cloudy_suffix_dict[cloudy],
+                    np.float(teff), logg_slider.value, cloudy,
                 )
 
                 fn = models_path + basename
@@ -308,9 +302,7 @@ def create_interact_ui(doc):
         teff = find_nearest(teff_points, teff_slider.value)
 
         for cloudy in [True, False]:
-            basename = basename_constructor(
-                np.float(teff), logg_par_dict[new], cloudy_suffix_dict[cloudy]
-            )
+            basename = basename_constructor(np.float(teff), new, cloudy)
 
             fn = models_path + basename
             if precache:
