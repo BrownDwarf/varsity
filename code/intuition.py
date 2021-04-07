@@ -1,14 +1,11 @@
 import numpy as np
 import pandas as pd
-import bokeh
 import glob
 import astropy.units as u
-import tqdm
 from muler.igrins import IGRINSSpectrum
 
-from bokeh.io import show, output_notebook, push_notebook
 from bokeh.plotting import figure, ColumnDataSource
-from bokeh.models import Slider, Span, Range1d, Dropdown
+from bokeh.models import Slider, Range1d
 from bokeh.layouts import layout, Spacer
 from bokeh.models.widgets import Button, Div
 
