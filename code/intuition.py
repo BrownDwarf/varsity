@@ -2,6 +2,9 @@ import numpy as np
 import pandas as pd
 import glob
 import astropy.units as u
+import os
+
+from pandas.core import base
 from muler.igrins import IGRINSSpectrum
 
 from bokeh.plotting import figure, ColumnDataSource
@@ -16,20 +19,36 @@ from collections import OrderedDict
 ## This should be faster, but is only slightly faster
 precache = False  # Toggle for caching
 
+# Data
+reduced_fns = glob.glob(
+    "../../data/IGRINS/originals/GS-2021A-DD-104/*/reduced/SDCK*.spec_a0v.fits"
+)
+spec1 = IGRINSSpectrum(file=reduced_fns[1], order=13).remove_nans().normalize()
+
 ## The subset with overlapping points
 teff_points = np.array([1000, 1300, 1600, 1700, 2100, 2200])
 logg_points = np.arange(3.75, 4.51, 0.25)
 logg_par_dict = {3.75: "56", 4.0: "100", 4.25: "178", 4.5: "316"}
+teff_dict = OrderedDict()
+for i, teff in enumerate(teff_points):
+    teff_dict[i] = str(teff)
 
-# The logg points are not regularized, so we'll have to make a lookup table
-fns_morley = sorted(
-    glob.glob("/home/gully/GitHub/varsity/models/models_forGully/t*.spec")
-)
+cloudy_suffix_dict = {False: "_cloudfree.spec", True: ".spec"}
+models_path = os.path.expandvars("$varsity/GitHub/varsity/models/models_forGully/")
+fns_morley = sorted(glob.glob(models_path + "/t*.spec"))
+
+
+def basename_constructor(teff, logg, cloudy=True):
+    """Construct the model basename base on Teff, logg, and cloudy flag"""
+    basename = "t{0:0>.0f}g{1:}f2_m0.0_co1.0_4100_5000_0.005{2:}".format(
+        np.float(teff), logg_par_dict[logg], cloudy_suffix_dict[cloudy]
+    )
+    return basename
 
 
 def get_lookup_dictionaries(fns, cloudy=True):
     """Get lookup dictionaries for each existing filename"""
-    basenames = [fn.split("/")[-1] for fn in fns_morley]
+    basenames = [fn.split("/")[-1] for fn in fns]
     if cloudy:
         suffix = "f2_m0.0_co1.0_4100_5000_0.005.spec"
     if not cloudy:
@@ -65,9 +84,9 @@ def load_and_prep_spectrum(fn, wl_low=2.108, wl_high=2.134, downsample=4):
         .reset_index(drop=True)
     )
 
-    assert (wl_low > 2.0) & (
-        wl_high < 2.51
-    ), "We can only model K-band clouds currently."
+    assertion_msg = "We can only model K-band clouds currently."
+    assert (wl_low > 2.0) & (wl_high < 2.51), assertion_msg
+
     ## Standardize flux density units to cgs
     morley_flux_w_units = df_native.flux_raw.values * u.Watt / u.m ** 2 / u.m
     flux_cgs_units = morley_flux_w_units.to(
@@ -98,40 +117,25 @@ def find_nearest(array, value):
     return array[idx]
 
 
-teff_dict = OrderedDict()
-for i, teff in enumerate(teff_points):
-    teff_dict[i] = str(teff)
-
-
 def create_interact_ui(doc):
 
-    ### data
-
-    reduced_fns = glob.glob(
-        "../../data/IGRINS/originals/GS-2021A-DD-104/*/reduced/SDCK*.spec_a0v.fits"
-    )
-    spec1 = IGRINSSpectrum(file=reduced_fns[1], order=13).remove_nans().normalize()
-
     ### Models
-
-    models_path = "/home/gully/GitHub/varsity/models/models_forGully/"
-    suffixes = {False: "_cloudfree.spec", True: ".spec"}
     ## Make the spectrum sources
     # Initialize
     teff = 1300
     logg = 4.0
-    base_name = "t{0:0>.0f}g{1:}f2_m0.0_co1.0_4100_5000_0.005{2:}".format(
-        np.float(teff), logg_par_dict[logg], suffixes[False]
+    basename = basename_constructor(
+        np.float(teff), logg_par_dict[logg], cloudy_suffix_dict[False]
     )
 
     # Cloud-free
-    df_nir = load_and_prep_spectrum(models_path + base_name, downsample=4)
+    df_nir = load_and_prep_spectrum(models_path + basename, downsample=4)
 
     # Cloudy
-    base_name = "t{0:0>.0f}g{1:}f2_m0.0_co1.0_4100_5000_0.005{2:}".format(
-        np.float(teff), logg_par_dict[logg], suffixes[True]
+    basename = basename_constructor(
+        np.float(teff), logg_par_dict[logg], cloudy_suffix_dict[True]
     )
-    df_cloud = load_and_prep_spectrum(models_path + base_name, downsample=4)
+    df_cloud = load_and_prep_spectrum(models_path + basename, downsample=4)
 
     # Fixed normalization constant for all spectra
     scalar_norm = np.percentile(df_nir.flux.values, 50)
@@ -169,10 +173,10 @@ def create_interact_ui(doc):
         border_fill_color="whitesmoke",
     )
     fig.title.offset = -10
-    fig.yaxis.axis_label = "Flux "
+    fig.yaxis.axis_label = "Flux"
     fig.xaxis.axis_label = "Wavelength (micron)"
     fig.y_range = Range1d(start=0, end=1.5)
-    xmin, xmax = df_nir.wavelength.min() * 0.995, df_nir.wavelength.max() * 1.005
+    xmin, xmax = df_nir.wavelength.min() * 0.998, df_nir.wavelength.max() * 1.002
     fig.x_range = Range1d(start=xmin, end=xmax)
 
     fig.step(
@@ -270,13 +274,15 @@ def create_interact_ui(doc):
             teff_message.text = "Closest grid point: {}".format(teff)
 
             for cloudy in [True, False]:
-                base_name = "t{0:0>.0f}g{1:}f2_m0.0_co1.0_4100_5000_0.005{2:}".format(
-                    np.float(teff), logg_par_dict[logg_slider.value], suffixes[cloudy]
+                basename = basename_constructor(
+                    np.float(teff),
+                    logg_par_dict[logg_slider.value],
+                    cloudy_suffix_dict[cloudy],
                 )
 
-                fn = models_path + base_name
+                fn = models_path + basename
                 if precache:
-                    df_nir = precached_grid[base_name]
+                    df_nir = precached_grid[basename]
                 else:
                     df_nir = load_and_prep_spectrum(fn, downsample=4)
 
@@ -302,13 +308,13 @@ def create_interact_ui(doc):
         teff = find_nearest(teff_points, teff_slider.value)
 
         for cloudy in [True, False]:
-            base_name = "t{0:0>.0f}g{1:}f2_m0.0_co1.0_4100_5000_0.005{2:}".format(
-                np.float(teff), logg_par_dict[new], suffixes[cloudy]
+            basename = basename_constructor(
+                np.float(teff), logg_par_dict[new], cloudy_suffix_dict[cloudy]
             )
 
-            fn = models_path + base_name
+            fn = models_path + basename
             if precache:
-                df_nir = precached_grid[base_name]
+                df_nir = precached_grid[basename]
             else:
                 df_nir = load_and_prep_spectrum(fn, downsample=4)
 
