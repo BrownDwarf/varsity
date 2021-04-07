@@ -23,32 +23,55 @@ from collections import OrderedDict
 ## This should be faster, but is only slightly faster
 precache = False # Toggle for caching
 
-## The published grid points of Sonora
-teff_points = np.array([500, 525, 550, 575, 600, 650, 700, 750, 800,
-            850, 900, 950,  1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700,
-            1800,1900, 2000, 2100, 2200, 2300, 2400])
-logg_points = np.arange(4.0, 5.51, 0.25)
-logg_par_dict = {4.0:"100",4.25:"178",4.5:"316",4.75:"562",
-                           5.0:"1000",5.25:"1780",5.5:"3160"}
+## The subset with overlapping points
+teff_points = np.array([1000, 1300, 1600, 1700, 2100, 2200])
+logg_points = np.arange(3.75, 4.51, 0.25)
+logg_par_dict = {3.75:"56", 4.0:"100",4.25:"178",4.5:"316"}
 
-## Caroline's custom cloudy models (only high-res in K-band)
+# The logg points are not regularized, so we'll have to make a lookup table
 fns_morley = sorted(glob.glob('/home/gully/GitHub/varsity/models/models_forGully/t*.spec'))
 
-def load_and_prep_spectrum(fn, wl_low=2.1, wl_high=2.13, downsample=4, cloudy=False):
+def get_lookup_dictionaries(fns, cloudy=True):
+    '''Get lookup dictionaries for each existing filename'''
+    basenames = [fn.split('/')[-1] for fn in fns_morley]
+    if cloudy:
+        suffix = 'f2_m0.0_co1.0_4100_5000_0.005.spec'
+    if not cloudy:
+        suffix = 'f2_m0.0_co1.0_4100_5000_0.005_cloudfree.spec'
+    basenames = [basename for basename in basenames if suffix in basename]
+
+    teff_labels = [int(basename[1:1+4]) for basename in basenames]
+    g_labels = [int(basename[6:].split('f')[0]) for basename in basenames]
+
+    label_pairs = list(zip(teff_labels, g_labels))
+
+    ## Filename dictionary given a tuple of (teff, g)
+    lookup_dict = {key:value for key, value in zip(label_pairs, basenames)}
+
+    ## g dictionary lookup given a teff
+    g_lookup_dict = {}
+    for teff_label in set(teff_labels):
+        g_lookup_dict[teff_label] = []
+    for teff_label, g_label in label_pairs:
+        g_lookup_dict[teff_label].append(g_label)
+    for key in g_lookup_dict.keys():
+        g_lookup_dict[key] = sorted(g_lookup_dict[key])
+
+    return (g_lookup_dict, lookup_dict)
+
+
+def load_and_prep_spectrum(fn, wl_low=2.1, wl_high=2.13, downsample=4):
     df_native = pd.read_csv(fn,
                             skiprows=[0, 1],
                             delim_whitespace=True,
                             names=['wavelength', 'flux_raw']
                            ).sort_values('wavelength').reset_index(drop=True)
 
+    assert (wl_low > 2.0) & (wl_high < 2.51), "We can only model K-band clouds currently."
     ## Standardize flux density units to cgs
-    if cloudy:
-        morley_flux_w_units = (df_native.flux_raw.values*u.Watt/u.m**2/u.m)
-        flux_cgs_units = morley_flux_w_units.to(u.erg/u.cm**2/u.s/u.Hz,
-                                equivalencies=u.spectral_density(df_native.wavelength.values*u.micron))
-    else:
-        flux_cgs_units = df_native['flux_raw'].values
-
+    morley_flux_w_units = (df_native.flux_raw.values*u.Watt/u.m**2/u.m)
+    flux_cgs_units = morley_flux_w_units.to(u.erg/u.cm**2/u.s/u.Hz,
+                            equivalencies=u.spectral_density(df_native.wavelength.values*u.micron))
     df_native['flux'] = flux_cgs_units
 
     ## Trim to the wavelength bounds
@@ -77,19 +100,20 @@ for i, teff in enumerate(teff_points):
 
 def create_interact_ui(doc):
 
+    models_path = '/home/gully/GitHub/varsity/models/models_forGully/'
+    suffixes={False:'_cloudfree.spec', True:'.spec'}
     ## Make the spectrum sources
     # Initialize
     teff = 1300
     logg = 4.0
-    base_name = "sp_t{0:0>.0f}g{1:}nc_m0.0".format(np.float(teff), logg_par_dict[logg])
-    fn = '~/libraries/raw/marley/'+base_name
+    base_name = "t{0:0>.0f}g{1:}f2_m0.0_co1.0_4100_5000_0.005{2:}".format(np.float(teff), logg_par_dict[logg], suffixes[False])
 
     # Cloud-free
-    df_nir = load_and_prep_spectrum(fn, downsample=4)
+    df_nir = load_and_prep_spectrum(models_path+base_name, downsample=4)
 
     # Cloudy
-    fn = fns_morley[38]
-    df_cloud = load_and_prep_spectrum(fn, downsample=4, cloudy=True)
+    base_name = "t{0:0>.0f}g{1:}f2_m0.0_co1.0_4100_5000_0.005{2:}".format(np.float(teff), logg_par_dict[logg], suffixes[True])
+    df_cloud = load_and_prep_spectrum(models_path+base_name, downsample=4)
 
     # Fixed normalization constant for all spectra
     scalar_norm = np.percentile(df_nir.flux.values, 95)
@@ -111,6 +135,8 @@ def create_interact_ui(doc):
             native_wavelength = df_cloud.wavelength.values
         )
     )
+
+    spec_sources = {True:spec_source_cloud, False:spec_source}
 
     fig = figure(
         title="Sonora Bobcat in Bokeh",
@@ -142,7 +168,7 @@ def create_interact_ui(doc):
         "flux",
         line_width=1,
         color="slategray",
-        source=spec_source_cloud,
+        source=spec_sources[True],
         nonselection_line_color="slategray",
         nonselection_line_alpha=1.0,
     )
@@ -172,7 +198,7 @@ def create_interact_ui(doc):
             start=min(teff_points),
             end=max(teff_points),
             value=1300,
-            step=25,
+            step=100,
             title="Teff",
             width=490
         )
@@ -192,6 +218,7 @@ def create_interact_ui(doc):
         """Callback to take action when smoothing slider changes"""
         #spec_source.data["wavelength"] = df_nir.wavelength.values[::new]
         spec_source.data["flux"] = gaussian_filter1d(spec_source.data["native_flux"], new)
+        spec_source_cloud.data["flux"] = gaussian_filter1d(spec_source_cloud.data["native_flux"], new)
 
     def update_upon_vz(attr, old, new):
         """Callback to take action when vz slider changes"""
@@ -203,18 +230,21 @@ def create_interact_ui(doc):
         teff = find_nearest(teff_points, new)
         if teff != old:
             teff_message.text = "Closest grid point: {}".format(teff)
-            base_name = "sp_t{0:0>.0f}g{1:}nc_m0.0".format(np.float(teff), logg_par_dict[logg])
 
-            fn = '~/libraries/raw/marley/'+base_name
-            if precache:
-                df_nir = precached_grid[base_name]
-            else:
-                df_nir = load_and_prep_spectrum(fn, downsample=4)
-            scalar_norm = np.percentile(df_nir.flux.values, 95)
-            spec_source.data["native_wavelength"] = df_nir.wavelength.values
-            spec_source.data["native_flux"] = df_nir.flux.values / scalar_norm
-            spec_source.data["wavelength"] = df_nir.wavelength.values - vz_slider.value
-            spec_source.data["flux"] = gaussian_filter1d(df_nir.flux.values/ scalar_norm, smoothing_slider.value)
+            for cloudy in [True, False]:
+                base_name = "t{0:0>.0f}g{1:}f2_m0.0_co1.0_4100_5000_0.005{2:}".format(np.float(teff), logg_par_dict[logg_slider.value], suffixes[cloudy])
+
+                fn = models_path+base_name
+                if precache:
+                    df_nir = precached_grid[base_name]
+                else:
+                    df_nir = load_and_prep_spectrum(fn, downsample=4)
+
+                scalar_norm = np.percentile(df_nir.flux.values, 95)
+                spec_sources[cloudy].data["native_wavelength"] = df_nir.wavelength.values
+                spec_sources[cloudy].data["native_flux"] = df_nir.flux.values / scalar_norm
+                spec_sources[cloudy].data["wavelength"] = df_nir.wavelength.values - vz_slider.value
+                spec_sources[cloudy].data["flux"] = gaussian_filter1d(df_nir.flux.values/ scalar_norm, smoothing_slider.value)
 
         else:
             pass
@@ -222,18 +252,21 @@ def create_interact_ui(doc):
     def update_upon_logg_selection(attr, old, new):
         """Callback to take action when logg slider changes"""
         teff = find_nearest(teff_points, teff_slider.value)
-        base_name = "sp_t{0:0>.0f}g{1:}nc_m0.0".format(np.float(teff), logg_par_dict[new])
 
-        fn = '~/libraries/raw/marley/'+base_name
-        if precache:
-            df_nir = precached_grid[base_name]
-        else:
-            df_nir = load_and_prep_spectrum(fn, downsample=4)
-        scalar_norm = np.percentile(df_nir.flux.values, 95)
-        spec_source.data["native_wavelength"] = df_nir.wavelength.values
-        spec_source.data["native_flux"] = df_nir.flux.values / scalar_norm
-        spec_source.data["wavelength"] = df_nir.wavelength.values - vz_slider.value
-        spec_source.data["flux"] = gaussian_filter1d(df_nir.flux.values/ scalar_norm, smoothing_slider.value)
+        for cloudy in [True, False]:
+            base_name = "t{0:0>.0f}g{1:}f2_m0.0_co1.0_4100_5000_0.005{2:}".format(np.float(teff), logg_par_dict[new], suffixes[cloudy])
+
+            fn = models_path+base_name
+            if precache:
+                df_nir = precached_grid[base_name]
+            else:
+                df_nir = load_and_prep_spectrum(fn, downsample=4)
+
+            scalar_norm = np.percentile(df_nir.flux.values, 95)
+            spec_sources[cloudy].data["native_wavelength"] = df_nir.wavelength.values
+            spec_sources[cloudy].data["native_flux"] = df_nir.flux.values / scalar_norm
+            spec_sources[cloudy].data["wavelength"] = df_nir.wavelength.values - vz_slider.value
+            spec_sources[cloudy].data["flux"] = gaussian_filter1d(df_nir.flux.values/ scalar_norm, smoothing_slider.value)
 
     def go_right_by_one():
         """Step forward in time by a single cadence"""
