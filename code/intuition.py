@@ -296,7 +296,7 @@ def create_interact_ui(doc):
     ff_slider = Slider(
         start=0,
         end=1.0,
-        value=0.98,
+        value=0.35,
         step=0.01,
         title="Filling factor of clouds",
         width=490,
