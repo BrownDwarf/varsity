@@ -20,9 +20,14 @@ from collections import OrderedDict
 precache = False  # Toggle for caching
 
 # Data
-reduced_fns = glob.glob(
-    "../../data/IGRINS/originals/GS-2021A-DD-104/*/reduced/SDCK*.spec_a0v.fits"
-)[0::2]
+band = "K"
+data_path = "../../data/IGRINS/originals/GS-2021A-DD-104/*/reduced/SDC{}*.spec_a0v.fits".format(
+    band
+)
+reduced_fns = glob.glob(data_path)
+reduced_fns = sorted(reduced_fns)
+reduced_fns = reduced_fns[slice(0, 8, 2)]
+
 spec1 = (
     IGRINSSpectrum(file=reduced_fns[3], order=13).remove_nans().normalize().trim_edges()
 )
@@ -89,7 +94,7 @@ def load_and_prep_spectrum(fn, wl_low=2.108, wl_high=2.134, downsample=4):
     assertion_msg = "We can only model K-band clouds currently: {:0.5f}, {:0.5f}".format(
         wl_low, wl_high
     )
-    assert (wl_low > 2.0) & (wl_high < 2.51), assertion_msg
+    # assert (wl_low > 2.0) & (wl_high < 2.51), assertion_msg
 
     ## Standardize flux density units to cgs
     morley_flux_w_units = df_native.flux_raw.values * u.Watt / u.m ** 2 / u.m
@@ -132,8 +137,12 @@ def create_interact_ui(doc):
     basename = basename_constructor(np.float(teff), logg, False)
 
     # Cloud-free
-    wl_low = np.nanmin(spec1.wavelength.value / 10_000)
-    wl_high = np.nanmax(spec1.wavelength.value / 10_000)
+    if band == "H":
+        wl_low = 2.1  # np.nanmin(spec1.wavelength.value / 10_000)
+        wl_high = 2.12  # np.nanmax(spec1.wavelength.value / 10_000)
+    else:
+        wl_low = np.nanmin(spec1.wavelength.value / 10_000)
+        wl_high = np.nanmax(spec1.wavelength.value / 10_000)
     df_nir = load_and_prep_spectrum(
         models_path + basename, downsample=4, wl_low=wl_low, wl_high=wl_high
     )
@@ -250,7 +259,7 @@ def create_interact_ui(doc):
     smoothing_slider = Slider(
         start=0.1,
         end=40,
-        value=12.1,
+        value=0.1,
         step=0.1,
         title="Spectral resolution kernel",
         width=490,
@@ -324,11 +333,16 @@ def create_interact_ui(doc):
             .normalize()
             .trim_edges()
         )
-        spec_source_data.data["wavelength"] = spec1.wavelength.value / 10_000
-        spec_source_data.data["flux"] = spec1.flux.value
+        spec_source_data.data = dict(
+            wavelength=spec1.wavelength.value / 10_000,
+            flux=spec1.flux.value
+        )
 
         fig.x_range.start = np.min(spec_source_data.data["wavelength"]) * 0.9995
         fig.x_range.end = np.max(spec_source_data.data["wavelength"]) * 1.0005
+
+        # We need to trigger the model update in Teff selection just to get the new model.
+        teff_slider.value +=1.0e-9 # Hack, but it works!
 
     def update_upon_smooth(attr, old, new):
         """Callback to take action when smoothing slider changes"""
@@ -389,7 +403,9 @@ def create_interact_ui(doc):
             )
 
         composite = cloud_mixture_model(ff_slider.value)
-        spec_source_net.data["flux"] = composite / np.median(composite)
+        spec_source_net.data = dict(
+                wavelength=spec_source.data["wavelength"], flux=composite / np.median(composite)
+            )
 
     def update_upon_logg_selection(attr, old, new):
         """Callback to take action when logg slider changes"""
