@@ -212,45 +212,20 @@ def create_interact_ui(doc):
         "wavelength",
         "flux",
         line_width=2,
-        color="sandybrown",
-        source=spec_source_data,
-        legend_label="IGRINS data",
-        nonselection_line_color="sandybrown",
-        nonselection_line_alpha=1.0,
-    )
-
-    # fig.step(
-    #    "wavelength",
-    #    "flux",
-    #    line_width=1,
-    #    color="darkmagenta",
-    #    source=spec_source,
-    #    visible=False,
-    #    nonselection_line_color="darkmagenta",
-    #    legend_label="Clear",
-    #    nonselection_line_alpha=1.0,
-    # )
-
-    # fig.step(
-    #    "wavelength",
-    #    "flux",
-    #    line_width=1,
-    #    color="slategray",
-    #    source=spec_source_cloud,
-    #    legend_label="Cloudy",
-    #    visible=False,
-    #    nonselection_line_color="slategray",
-    #    nonselection_line_alpha=1.0,
-    # )
-
-    fig.step(
-        "wavelength",
-        "flux",
-        line_width=2,
         color="darkslateblue",
         source=spec_source_net,
         legend_label="Partly cloudy mixture model",
         nonselection_line_color="darkslateblue",
+        nonselection_line_alpha=1.0,
+    )
+    fig.step(
+        "wavelength",
+        "flux",
+        line_width=2,
+        color="sandybrown",
+        source=spec_source_data,
+        legend_label="IGRINS data",
+        nonselection_line_color="sandybrown",
         nonselection_line_alpha=1.0,
     )
 
