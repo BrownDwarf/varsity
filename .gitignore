@@ -143,3 +143,12 @@ document/paper1/final
 # Ignore large IGRINS data
 # Instructions for retrieving data are in the data folder README.
 data/IGRINS/originals
+
+## Custom Cloudy synthetic spectral models
+# These are large (~0.5 GB compressed) and provided by Caroline
+models/models_forGully
+models/models_forGully.zip
+
+## Starfish configuration files
+# Ingore for now until, they are programmatically generated anyways.
+sf/
