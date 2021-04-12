@@ -149,6 +149,13 @@ data/IGRINS/originals
 models/models_forGully
 models/models_forGully.zip
 
+## Harvard Plate Archive
+data/DASCH/plates
+data/DASCH/plates.tar
+data/DASCH/query
+
+
+
 ## Starfish configuration files
 # Ingore for now until, they are programmatically generated anyways.
 sf/
