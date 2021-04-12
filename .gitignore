@@ -143,6 +143,7 @@ document/paper1/final
 # Ignore large IGRINS data
 # Instructions for retrieving data are in the data folder README.
 data/IGRINS/originals
+data/IGRINS/processed
 
 ## Custom Cloudy synthetic spectral models
 # These are large (~0.5 GB compressed) and provided by Caroline
@@ -153,7 +154,6 @@ models/models_forGully.zip
 data/DASCH/plates
 data/DASCH/plates.tar
 data/DASCH/query
-
 
 
 ## Starfish configuration files
