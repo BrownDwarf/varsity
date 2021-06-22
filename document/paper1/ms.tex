@@ -46,21 +46,17 @@ Here is an annotated bibliography.
 
 
 \section{Methodology}
-We used IGRINS \citep{park14,2018SPIE10702E..0QM}, reduced with the \texttt{plp} \citep{jaejoonlee16}.
+
 
 \section{Data}
 
 \subsection{IGRINS}
-We acquired IGRINS data with Gemini South.  
+We acquired spectra from IGRINS \citep{park14,2018SPIE10702E..0QM} at Gemini South as part of Director's Discretionary Time proposal \texttt{GS-2021A-DD-104}.  We estimated an angular separation $\rho = 1\farcs28$ and $P.A. = 133^\circ$ based on the orbital parameters from Table 5 of \citet{2018A&A...618A.111L} for the epoch 2021.xx.  The $0\farcs34 \times 5\farcs0$ IGRINS slit at Gemini South presents an economic tradeoff on how to orient the slit relative to the binary.  Aligning the slit along the $P.A.$ collects more photons, but complicates the data reduction process.  Aligning the slit perpendicular to the $P.A.$ collects less flux per exposure, but allows the \texttt{plp} piepeline package \citep{jaejoonlee16} to be used for standard and well-tested data reduction.  We chose the latter strategy, aligning the IGRINS $P.A.$ to $XX^\circ$, as shown in Figure \ref{fig:imaging}.
 
 \begin{figure*}[ht]
   \centering
-  \begin{tabular}{ccc}
-    \subfloat{\includegraphics[width=1in]{figures/Luhman16_120x120arcsec_TESS_S36.png}} &
-    \subfloat{\includegraphics[width=1in]{figures/Luhman16_120x120arcsec_IGRINS_20210311.png}} &
-    \subfloat{\includegraphics[width=1in]{figures/Luhman16_16x16arcsec_IGRINS_20210311.png}} \\
-  \end{tabular}
-\caption{Imaging of Luhman 16.  Left two images: TESS and IGRINS slit viewing camera in $120'' \times 120''$ postage stamps with the AB component imperceptible at this magnification level. Right: A $16'' \times 16''$ zoom-in of the IGRINS $K$-band Slit Viewing Cameras revealing the AB components' PA aligned perpendicularly to the IGRINS slit.}
+    \includegraphics[width=3in]{figures/Luhman16_IGRINS_slit_20210311.pdf} \\
+\caption{A $21'' \times 21''$ postage stamp---equal to the size of one TESS pixel---of the IGRINS $K-$band Slit Viewing Camera at Gemini South on March 11, 2021.  The color scale is inverted.  The PA of the AB components was intentionally aligned perpendicular to the $0\farcs34 \times 5\farcs0$ IGRINS slit seen as a white diagonal silhouette to the southeast (bottom left) of the binary. TESS Full Frame Images (not shown) and resulting lightcurves consist of the integrated light from both components.}
 \label{fig:imaging}
 \end{figure*}
 
