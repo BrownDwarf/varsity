@@ -1,14 +1,16 @@
 \documentclass[modern]{aastex631}
 \bibliographystyle{aasjournal}
 
-\usepackage{fontspec}
-\usepackage[T1]{fontenc}
-\usepackage{newtxsf}
-\setmainfont{Fira Sans Book}[Scale=1.0]
+% \usepackage{fontspec}
+% \usepackage[T1]{fontenc}
+% \usepackage{newtxsf}
+% \setmainfont{Fira Sans Book}[Scale=1.0]
+
+\usepackage[caption=false]{subfig}
 
 
 \begin{document}
-\shorttitle{Brown dwarf clouds with TESS and IGRINS}
+\shorttitle{Condensate clouds with TESS and IGRINS}
 \shortauthors{Gully-Santiago et al. }
 \title{Disentangling brown dwarf clouds with IGRINS and contemporaneous TESS monitoring}
 
@@ -46,6 +48,26 @@ Here is an annotated bibliography.
 \section{Methodology}
 We used IGRINS \citep{park14,2018SPIE10702E..0QM}, reduced with the \texttt{plp} \citep{jaejoonlee16}.
 
+\section{Data}
+
+\subsection{IGRINS}
+We acquired IGRINS data with Gemini South.  
+
+\begin{figure*}[ht]
+  \centering
+  \begin{tabular}{ccc}
+    \subfloat{\includegraphics[width=1in]{figures/Luhman16_120x120arcsec_TESS_S36.png}} &
+    \subfloat{\includegraphics[width=1in]{figures/Luhman16_120x120arcsec_IGRINS_20210311.png}} &
+    \subfloat{\includegraphics[width=1in]{figures/Luhman16_16x16arcsec_IGRINS_20210311.png}} \\
+  \end{tabular}
+\caption{Imaging of Luhman 16.  Left two images: TESS and IGRINS slit viewing camera in $120'' \times 120''$ postage stamps with the AB component imperceptible at this magnification level. Right: A $16'' \times 16''$ zoom-in of the IGRINS $K$-band Slit Viewing Cameras revealing the AB components' PA aligned perpendicularly to the IGRINS slit.}
+\label{fig:imaging}
+\end{figure*}
+
+The end!
+
+
+\subsection{TESS}
 
 
 \begin{acknowledgements}
