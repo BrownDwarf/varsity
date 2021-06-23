@@ -2,6 +2,7 @@ name: varsity
 channels:
   - defaults
   - conda-forge
+  - astropy
 dependencies:
   - python=3.6
   - numpy
@@ -30,7 +31,8 @@ dependencies:
   - astroplan
   - exoplanet # needed for orbit prediction
   - pip
-  # - reproject # conda-forge
+  - reproject # conda-forge
+  - aplpy
   ## We need SEP, but it is flakey with conda, so manually install:
   #   https://sep.readthedocs.io/en/v1.0.x/
   #   pip install --no-deps sep
@@ -46,4 +48,5 @@ dependencies:
       #- mkl-random
       - emcee
       - corner
+      - montage-wrapper
       # - muler # Install developer version
