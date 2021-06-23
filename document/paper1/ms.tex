@@ -41,6 +41,7 @@ Here is an annotated bibliography.
   \citet{2013ApJ...767L...1L} & - & Discovery paper\\
   \citet{2021ApJ...906...64A} & - & TESS data \\
   \citet{2016ApJ...825...90K} & - & HST Time-resolved spectroscopy maps\\
+  \citet{2017MNRAS.470.1140B} & - & HST Orbit fitting\\
   \enddata
 \end{deluxetable}
 
@@ -51,7 +52,9 @@ Here is an annotated bibliography.
 \section{Data}
 
 \subsection{IGRINS}
-We acquired spectra from IGRINS \citep{park14,2018SPIE10702E..0QM} at Gemini South as part of Director's Discretionary Time proposal \texttt{GS-2021A-DD-104}.  We estimated an angular separation $\rho = 1\farcs28$ and $P.A. = 133^\circ$ based on the orbital parameters from Table 5 of \citet{2018A&A...618A.111L} for the epoch 2021.xx.  The $0\farcs34 \times 5\farcs0$ IGRINS slit at Gemini South presents an economic tradeoff on how to orient the slit relative to the binary.  Aligning the slit along the $P.A.$ collects more photons, but complicates the data reduction process.  Aligning the slit perpendicular to the $P.A.$ collects less flux per exposure, but allows the \texttt{plp} piepeline package \citep{jaejoonlee16} to be used for standard and well-tested data reduction.  We chose the latter strategy, aligning the IGRINS $P.A.$ to $XX^\circ$, as shown in Figure \ref{fig:imaging}.
+We acquired spectra from IGRINS \citep{park14,2018SPIE10702E..0QM} at Gemini South as part of Director's Discretionary Time proposal \texttt{GS-2021A-DD-104}.  We computed an angular separation $\rho = 1\farcs3 \pm 0 \farcs 1$ and $P.A. = 134 \pm 3^\circ$ based on the orbital parameters from Table 5 of \citet{2018A&A...618A.111L} for the epoch 2021.19; the uncertainties are based on the comparison of predictions from \citet{2017MNRAS.470.1140B} and \citet{2018A&A...618A.111L}, which came to different values at these small levels.  The $0\farcs34 \times 5\farcs0$ IGRINS slit at Gemini South presents an economic tradeoff on how to orient the slit relative to the binary.  Aligning the slit along the $P.A.$ collects more photons, but complicates the data reduction process.  Aligning the slit perpendicular to the $P.A.$ collects less flux per exposure, but allows the \texttt{plp} piepeline package \citep{jaejoonlee16} to be used for standard and well-tested data reduction.  We chose the latter strategy, aligning the IGRINS $P.A.$ to $44^\circ$, as shown in Figure \ref{fig:imaging}.
+
+Luhman~16 appears near a local maximum of projected sky separation in 2021, with the B component expected to reside South and East of the A component.
 
 \begin{figure*}[ht]
   \centering
@@ -64,6 +67,26 @@ The end!
 
 
 \subsection{TESS}
+
+
+\section{Results}
+State the discoveries here.
+
+\section{Discussion}
+
+\subsection{Future observation strategies}
+Luhman~16 will remain a benchmark target for the forseeable future, with hundreds more hours of valuable telescope resources plausibly destined for this single target.  Here we examine the tradeoffs in how future observation strategies could make the most judicious use of scarce resources moving forward.
+
+Things to say:  
+\begin{itemize}
+  \item Slit alignment: How does alignment change with orbital separation
+  \item The limits on the ability to calibrate the relative fluxes on the same slit
+  \item Slit alignment: How the uncertainty in the orbital projection flows down to alignment
+  \item The technical barrier of extracting two traces from the same echellogram, sky subtraction and PSF fitting (spectroastrometry)
+  \item Point-and-stare versus snapshots and night-to-night calibration
+  \item Spectral decomposition and 
+\end{itemize}
+
 
 
 \begin{acknowledgements}
