@@ -34,8 +34,9 @@ We disentangle clouds on the nearby brown dwarf Luhman 16 using multi-epoch IGRI
 Here is an annotated bibliography.
 
 \begin{deluxetable}{chc}
+  \tablecaption{Annotated bibliography for intro\label{table1}}
   \tablehead{
-  \colhead{one} & \nocolhead{two} & \colhead{three}
+  \colhead{Reference} & \nocolhead{two} & \colhead{Key idea}
   }
   \startdata
   \citet{2013ApJ...767L...1L} & - & Discovery paper\\
@@ -45,11 +46,7 @@ Here is an annotated bibliography.
   \enddata
 \end{deluxetable}
 
-
-\section{Methodology}
-
-
-\section{Data}
+\section{Observations}
 
 \subsection{IGRINS}
 We acquired spectra from IGRINS \citep{park14,2018SPIE10702E..0QM} at Gemini South as part of Director's Discretionary Time proposal \texttt{GS-2021A-DD-104}.  We computed an angular separation $\rho = 1\farcs3 \pm 0 \farcs 1$ and $P.A. = 134 \pm 3^\circ$ based on the orbital parameters from Table 5 of \citet{2018A&A...618A.111L} for the epoch 2021.19; the uncertainties are based on the comparison of predictions from \citet{2017MNRAS.470.1140B} and \citet{2018A&A...618A.111L}, which came to different values at these small levels.  The $0\farcs34 \times 5\farcs0$ IGRINS slit at Gemini South presents an economic tradeoff on how to orient the slit relative to the binary.  Aligning the slit along the $P.A.$ collects more photons, but complicates the data reduction process.  Aligning the slit perpendicular to the $P.A.$ collects less flux per exposure, but allows the \texttt{plp} piepeline package \citep{jaejoonlee16} to be used for standard and well-tested data reduction.  We chose the latter strategy, aligning the IGRINS $P.A.$ to $44^\circ$, as shown in Figure \ref{fig:imaging}.
@@ -86,27 +83,42 @@ Table \ref{table1} lists the BTJD of each binary component on each night.
 
 \end{deluxetable}
 
-\subsection{TESS}
+\section{Analysis}
 
+\subsection{TESS lightcurves}
+
+TESS observed Luhman~16 in Sectors 36 and 37 with 10-minute cadence in the Full-Frame Images (FFI).  It was not preselected for 2-minute or shorter cadences.  For Sector 36, we retrieved $3477$ calibrated, Early Release Full Frame Image TICA products \citep{2020RNAAS...4..251F} from \emph {TESS} Camera 3 CCD 1, hosted on \emph{MAST}.  We extracted $17$-pixel square postage stamps centered on the expected $x,y$ coordinates of Luhman~16 $(538, 155)$, discarding the rest of the voluminous FFI.  We assigned a 2-pixel target aperture based on those central pixels routinely exceeding the median of the $17\times17\times3477$ datacube. We constructed a non-contiguous 68-pixel background mask of those pixels in the bottom $15^{th}$ percentile of a median-combined-flux image and greater than 15 pixels away from the postage-stamp center position. The background-subtracted lightcurve was trimmed to remove portions of the data degraded by thermal settling immediately after data downlinks and fine-point acquisition.  We also removed conspicuous outliers 3 standard deviations above or below the median flux.  The final Sector 36 flux time-series contains XX time-points.  We adapted the same process for Camera 3 CCD 2 in Sector 37, yielding a lightcurve of XX time-points.  The two lightcurves were normalized to their median value.  No attempt was made to vertically register the two lightcurves to each other so that the end of Sector 36 would appear in-phase with the start of Sector 37.
+
+We also extracted the Sector 10 30-minute cadence lightcurve using a similar methodology, adapted in the following way.  We retrieved a sequence of $16\times51$ TESS FFI cutouts as a Target Pixel File (TPF) using the \emph{TESScut} tool hosted on \emph{MAST}.  We used a 4-pixel target aperture and tolerated background pixels at any separation from the target.
+
+The Sector 10, 36, and 37 lightcurves are shown in Figure XX, annotated with the acquisition times of the contemporaneous IGRINS spectroscopy.  The reduced TESS lightcurves, IGRINS data, and reproducible reduction scripts are publicly available\footnote{\url{https://github.com/BrownDwarf/varsity}}.
+
+Figure XX overplots the Sector 10 \texttt{PATHOS} lightcurve of \citet{2021ApJ...906...64A} with our custom reduction.  We see excellent agreement between the two methods.  Our approach apparently offers a more stable lightcurve during the thermal settling windows, with recovery of up to $10\%$ additional time-points residing near the mean-line trend.
 
 \section{Results}
 State the discoveries here.
 
 \section{Discussion}
 
-\subsection{Future observation strategies}
+\subsection{Future IGRINS observation strategies}
 Luhman~16 will remain a benchmark target for the forseeable future, with hundreds more hours of valuable telescope resources plausibly destined for this single target.  Here we examine the tradeoffs in how future observation strategies could make the most judicious use of scarce resources moving forward.
 
 Things to say:  
-\begin{itemize}
-  \item Slit alignment: How does alignment change with orbital separation
-  \item The limits on the ability to calibrate the relative fluxes on the same slit
-  \item Slit alignment: How the uncertainty in the orbital projection flows down to alignment
-  \item The technical barrier of extracting two traces from the same echellogram, sky subtraction and PSF fitting (spectroastrometry)
-  \item Point-and-stare versus snapshots and night-to-night calibration
-  \item Spectral decomposition and 
-\end{itemize}
+\begin{enumerate}
+  \item Slit alignment: How does alignment change with orbital separation  
+  \item The limits on the ability to calibrate the relative fluxes on the same slit  
+  \item Slit alignment: How the uncertainty in the orbital projection flows down to alignment  
+  \item The technical barrier of extracting two traces from the same echellogram, sky subtraction and PSF fitting (spectroastrometry)  
+  \item Point-and-stare versus snapshots and night-to-night calibration 
+  \item PSF Decomposition on the slit  
+\end{enumerate}
 
+\subsection{Future TESS observation strategies}
+\begin{enumerate}
+  \item Should it receive 2-minute or shorted cadence in the future? 
+  \item Strategies for contemporaneous observations: spectra in the same band?  
+  \item Contemporaneous Panchromatic spectra or some sparse ground-based R-band photometry or spectrophotometry?
+\end{enumerate}
 
 
 \begin{acknowledgements}
