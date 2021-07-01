@@ -27,6 +27,7 @@ dependencies:
   - photutils # from conda-forge?
   - scikit-learn
   - scikit-image
+  - nbstripout
   - yaml
   - astroplan
   - exoplanet # needed for orbit prediction
@@ -48,5 +49,6 @@ dependencies:
       #- mkl-random
       - emcee
       - corner
+      - nbdime
       - montage-wrapper
       # - muler # Install developer version
