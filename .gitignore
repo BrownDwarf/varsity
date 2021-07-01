@@ -159,3 +159,6 @@ data/DASCH/query
 ## Starfish configuration files
 # Ingore for now until, they are programmatically generated anyways.
 sf/
+
+## Imaging data
+data/imaging
