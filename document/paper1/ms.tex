@@ -95,6 +95,9 @@ The Sector 10, 36, and 37 lightcurves are shown in Figure XX, annotated with the
 
 Figure XX overplots the Sector 10 \texttt{PATHOS} lightcurve of \citet{2021ApJ...906...64A} with our custom reduction.  We see excellent agreement between the two methods.  Our approach apparently offers a more stable lightcurve during the thermal settling windows, with recovery of up to $10\%$ additional time-points residing near the mean-line trend.
 
+\subsection{Digitized Photographic Plates}
+We attempted to recover the position of Luhman~16 from historical photographic plates recently digitized through the \emph{DASCH} project citeXX.  We retrieved a sequence of 34 thumbnails spanning 1926 - 1952.  We matched a constellation of 11 conspicuous stars in the \emph{HST} imaging from \citet{2017MNRAS.470.1140B} (c.f. Figure \ref{fig:imaging}), with each star comparable in magnitude to Luhman~16.  The constellation pattern was barely perceptible in the DASCH images.  An animated sequence of the images yielded no detectable movement in the vicinity of Luhman~16's expected proper motion path.  This non-detection comports with the faint visible band flux of Luhman~16 and the limiting magnitude of $12-14$ for \emph{DASCH}.
+
 \section{Results}
 State the discoveries here.
 
@@ -128,13 +131,15 @@ This work used the Immersion Grating Infrared Spectrometer (IGRINS) that was dev
 
 This paper includes data collected by the TESS mission. Funding for the TESS mission is provided by the NASA's Science Mission Directorate.
 
+This paper includes analysis on data from the DASCH project at Harvard (NSF grants AST-0407380, AST-0909073, and AST-1313370).
+
 The authors acknowledge the Texas Advanced Computing Center (TACC, \url{http://www.tacc.utexas.edu}) at The University of Texas at Austin for providing HPC resources that have contributed to the research results reported within this paper.
 \end{acknowledgements}
 
 \clearpage
 
 
-\facilities{Gemini South (IGRINS), TESS}
+\facilities{Gemini South (IGRINS), TESS, DASCH}
 
 \software{  pandas \citep{mckinney10, reback2020pandas},
   emcee \citep{foreman13},
