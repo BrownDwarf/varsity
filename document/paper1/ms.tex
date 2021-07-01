@@ -7,7 +7,7 @@
 % \setmainfont{Fira Sans Book}[Scale=1.0]
 
 \usepackage[caption=false]{subfig}
-
+\usepackage{booktabs}
 
 \begin{document}
 \shorttitle{Condensate clouds with TESS and IGRINS}
@@ -54,17 +54,37 @@ Here is an annotated bibliography.
 \subsection{IGRINS}
 We acquired spectra from IGRINS \citep{park14,2018SPIE10702E..0QM} at Gemini South as part of Director's Discretionary Time proposal \texttt{GS-2021A-DD-104}.  We computed an angular separation $\rho = 1\farcs3 \pm 0 \farcs 1$ and $P.A. = 134 \pm 3^\circ$ based on the orbital parameters from Table 5 of \citet{2018A&A...618A.111L} for the epoch 2021.19; the uncertainties are based on the comparison of predictions from \citet{2017MNRAS.470.1140B} and \citet{2018A&A...618A.111L}, which came to different values at these small levels.  The $0\farcs34 \times 5\farcs0$ IGRINS slit at Gemini South presents an economic tradeoff on how to orient the slit relative to the binary.  Aligning the slit along the $P.A.$ collects more photons, but complicates the data reduction process.  Aligning the slit perpendicular to the $P.A.$ collects less flux per exposure, but allows the \texttt{plp} piepeline package \citep{jaejoonlee16} to be used for standard and well-tested data reduction.  We chose the latter strategy, aligning the IGRINS $P.A.$ to $44^\circ$, as shown in Figure \ref{fig:imaging}.
 
+
+
 Luhman~16 appears near a local maximum of projected sky separation in 2021, with the B component expected to reside South and East of the A component.
 
 \begin{figure*}[ht]
   \centering
-    \includegraphics[width=3in]{figures/Luhman16_IGRINS_slit_20210311.pdf} \\
-\caption{A $21'' \times 21''$ postage stamp---equal to the size of one TESS pixel---of the IGRINS $K-$band Slit Viewing Camera at Gemini South on March 11, 2021.  The color scale is inverted.  The PA of the AB components was intentionally aligned perpendicular to the $0\farcs34 \times 5\farcs0$ IGRINS slit seen as a white diagonal silhouette to the southeast (bottom left) of the binary. TESS Full Frame Images (not shown) and resulting lightcurves consist of the integrated light from both components.}
+    \includegraphics[width=1.8in]{figures/DS9_HST_zoom_in_matched.png}
+    \includegraphics[width=1.8in]{figures/DS9_IGRINS_SVC_zoom_in.png} \\
+\caption{Imaging of Luhman~16, with North up and East to the left.  \texttt{Left:} \emph{Hubble Space Telescope} WFC3/UVIS/F814W mosaic from 12 visits of in 2014.638 to 2016.757 \citep{2017MNRAS.470.1140B}.  The thin blue line illustrates the approximate path of the proper motion, with a thin red circle denoting the binary's approximate expected position for 2021. A $21'' \times 21''$ postage stamp---equal to the size of one TESS pixel---appears as a dashed cyan square.  \texttt{Right:} The IGRINS $K-$band Slit Viewing Camera (SVC) at Gemini South on March 11, 2021.  The expected P.A. of the AB components was intentionally aligned perpendicular to the $0\farcs34 \times 5\farcs0$ IGRINS slit, seen as a black diagonal silhouette. Seven faint background reference stars common to both images are circled in green.  TESS Full Frame Images (not shown) and resulting lightcurves consist of the integrated light from both components.  The A component is to the northwest (upper right) with the B component to the southeast (lower left).  The magenta dashed circle shows the extent of the (vignetted) SVC.}
 \label{fig:imaging}
 \end{figure*}
 
-The end!
 
+%\begin{figure*}[ht]
+%  \centering
+%    \includegraphics[width=3in]{figures/Luhman16_IGRINS_slit_20210311.pdf} \\
+%\caption{A $21'' \times 21''$ postage stamp---equal to the size of one TESS pixel---of the IGRINS $K-$band Slit Viewing Camera at Gemini South on March 11, 2021.  The color scale is inverted.  The PA of the AB components was intentionally aligned perpendicular to the $0\farcs34 \times 5\farcs0$ IGRINS slit seen as a white diagonal silhouette to the southeast (bottom left) of the binary. TESS Full Frame Images (not shown) and resulting lightcurves consist of the integrated light from both components.}
+%\label{fig:imaging}
+%\end{figure*}
+
+Table \ref{table1} lists the BTJD of each binary component on each night.
+
+\begin{deluxetable}{ccc}
+  \tablecaption{IGRINS Observing Log\label{table1}}
+  \tablehead{
+    \colhead{Night of} & \colhead{Bin. Comp.} &\colhead{BTJD}}
+  \startdata
+  \input{IGRINS_obs_log.txt}
+  \enddata
+
+\end{deluxetable}
 
 \subsection{TESS}
 
