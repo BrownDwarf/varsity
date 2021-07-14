@@ -1,0 +1,47 @@
+name: varsity_m1
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.8
+  - numpy
+  - scipy
+  - matplotlib
+  - astroquery # from conda-forge channel
+  - beautifulsoup4
+  - astropy>=4.1
+  - tqdm
+  - pandas
+  - lightkurve>2.0
+  - bokeh=2.2.3
+  - jupyter
+  #- celerite2
+  - fitsio
+  - ipython
+  - seaborn
+  - h5py
+  #- photutils # from conda-forge?
+  - nbstripout
+  - yaml
+  #- exoplanet # needed for orbit prediction
+  - pip
+  #- reproject # conda-forge
+  #- aplpy
+  ## We need SEP, but it is flakey with conda, so manually install:
+  #   https://sep.readthedocs.io/en/v1.0.x/
+  #   pip install --no-deps sep
+  #
+  #
+  ## Also installed a custom Starfish:
+  # obsidian at dust in ~/GitHub/Starfish on mix_model_omega2 [!]
+  # $ python setup.py develop
+  #
+  # Need to install Montage: https://github.com/Caltech-IPAC/Montage
+  - pip:
+      - twisted
+      - emcee
+      - corner
+      - nbdime
+      - montage-wrapper
+      # - celerite2
+      # - muler # Install developer version
