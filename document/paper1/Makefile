@@ -11,4 +11,4 @@ all: ms.pdf
 	rm -rf *.blg
 	rm -rf *.dvi
 	mv ms.pdf final/
-	xdg-open final/ms.pdf
+	open final/ms.pdf
