@@ -102,20 +102,20 @@ def load_and_prep_spectrum(fn, wl_low=2.108, wl_high=2.134, downsample=4):
         u.erg / u.cm ** 2 / u.s / u.Hz,
         equivalencies=u.spectral_density(df_native.wavelength.values * u.micron),
     )
-    df_native["flux"] = flux_cgs_units
+    df_native["flux"] = flux_cgs_units.value
 
     ## Trim to the wavelength bounds
     nir_mask = (df_native.wavelength > wl_low) & (df_native.wavelength < wl_high)
 
     ## Decimate the data:
-    df_nir = (
-        df_native[["wavelength", "flux"]][nir_mask]
-        .rolling(int(downsample * 2.5), win_type="gaussian")
-        .mean(std=downsample / 2)
-        .iloc[::downsample, :]
-        .dropna()
-        .reset_index(drop=True)
-    )
+    df_nir = df_native[["wavelength", "flux"]]
+    df_nir = df_nir[nir_mask]
+    df_nir = df_nir.rolling(int(downsample * 2.5), win_type="gaussian")
+    df_nir = df_nir.mean(std=downsample / 2)
+    df_nir = df_nir.iloc[::downsample, :]
+    df_nir = df_nir.dropna()
+    df_nir = df_nir.reset_index(drop=True)
+    
 
     return df_nir
 
