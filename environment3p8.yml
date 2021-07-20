@@ -1,0 +1,44 @@
+name: varsity_3p8
+channels:
+  - defaults
+  - conda-forge
+  - astropy
+dependencies:
+  - python=3.8
+  - numpy
+  - scipy
+  - matplotlib
+  - astroquery # from conda-forge channel
+  - astropy>=4.1
+  - tqdm
+  - pandas
+  - lightkurve
+  - bokeh=2.2.3
+  - jupyter
+  - specutils=1.3
+  - celerite2
+  - fitsio
+  - ipython
+  - seaborn
+  - h5py
+  - photutils # from conda-forge?
+  - nbstripout
+  - yaml
+  - pip
+  ## We need SEP, but it is flakey with conda, so manually install:
+  #   https://sep.readthedocs.io/en/v1.0.x/
+  #   pip install --no-deps sep
+  #
+  #
+  ## Also installed a custom Starfish:
+  # obsidian at dust in ~/GitHub/Starfish on mix_model_omega2 [!]
+  # $ python setup.py develop
+  #
+  # Need to install Montage: https://github.com/Caltech-IPAC/Montage
+  - pip:
+      - twisted
+      #- mkl-random
+      - emcee
+      - corner
+      - nbdime
+      # - muler # Install developer version
