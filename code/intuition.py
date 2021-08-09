@@ -27,6 +27,8 @@ data_path = "../../data/IGRINS/originals/GS-2021A-DD-104/*/reduced/SDC{}*.spec_a
 reduced_fns = glob.glob(data_path)
 reduced_fns = sorted(reduced_fns)
 reduced_fns = reduced_fns[slice(0, 8, 2)]
+print(reduced_fns)
+#reduced_fns = reduced_fns[slice(1, 8, 2)]
 
 spec1 = (
     IGRINSSpectrum(file=reduced_fns[3], order=13).remove_nans().normalize().trim_edges()
@@ -194,10 +196,10 @@ def create_interact_ui(doc):
     spec_sources = {True: spec_source_cloud, False: spec_source}
 
     fig = figure(
-        title="Sonora Bobcat in Bokeh",
+        title="Custom Cloudy Sonora Model Dashboard",
         plot_height=340,
         plot_width=600,
-        tools="pan,wheel_zoom,box_zoom,tap,reset",
+        tools="pan,wheel_zoom,box_zoom,tap,reset,save",
         toolbar_location="below",
         border_fill_color="whitesmoke",
     )
