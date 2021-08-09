@@ -28,7 +28,7 @@ reduced_fns = glob.glob(data_path)
 reduced_fns = sorted(reduced_fns)
 reduced_fns = reduced_fns[slice(0, 8, 2)]
 print(reduced_fns)
-#reduced_fns = reduced_fns[slice(1, 8, 2)]
+# reduced_fns = reduced_fns[slice(1, 8, 2)]
 
 spec1 = (
     IGRINSSpectrum(file=reduced_fns[3], order=13).remove_nans().normalize().trim_edges()
@@ -117,7 +117,6 @@ def load_and_prep_spectrum(fn, wl_low=2.108, wl_high=2.134, downsample=4):
     df_nir = df_nir.iloc[::downsample, :]
     df_nir = df_nir.dropna()
     df_nir = df_nir.reset_index(drop=True)
-    
 
     return df_nir
 
@@ -311,15 +310,14 @@ def create_interact_ui(doc):
             .trim_edges()
         )
         spec_source_data.data = dict(
-            wavelength=spec1.wavelength.value / 10_000,
-            flux=spec1.flux.value
+            wavelength=spec1.wavelength.value / 10_000, flux=spec1.flux.value
         )
 
         fig.x_range.start = np.min(spec_source_data.data["wavelength"]) * 0.9995
         fig.x_range.end = np.max(spec_source_data.data["wavelength"]) * 1.0005
 
         # We need to trigger the model update in Teff selection just to get the new model.
-        teff_slider.value +=1.0e-9 # Hack, but it works!
+        teff_slider.value += 1.0e-9  # Hack, but it works!
 
     def update_upon_smooth(attr, old, new):
         """Callback to take action when smoothing slider changes"""
@@ -381,8 +379,9 @@ def create_interact_ui(doc):
 
         composite = cloud_mixture_model(ff_slider.value)
         spec_source_net.data = dict(
-                wavelength=spec_source.data["wavelength"], flux=composite / np.median(composite)
-            )
+            wavelength=spec_source.data["wavelength"],
+            flux=composite / np.median(composite),
+        )
 
     def update_upon_logg_selection(attr, old, new):
         """Callback to take action when logg slider changes"""
