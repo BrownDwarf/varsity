@@ -20,14 +20,13 @@ from collections import OrderedDict
 precache = False  # Toggle for caching
 
 # Data
-band = "K"
+band = "H"  # "H" or "K"
 data_path = "../../data/IGRINS/originals/GS-2021A-DD-104/*/reduced/SDC{}*.spec_a0v.fits".format(
     band
 )
 reduced_fns = glob.glob(data_path)
 reduced_fns = sorted(reduced_fns)
 reduced_fns = reduced_fns[slice(0, 8, 2)]
-print(reduced_fns)
 # reduced_fns = reduced_fns[slice(1, 8, 2)]
 
 spec1 = (
@@ -35,23 +34,32 @@ spec1 = (
 )
 
 ## The subset with overlapping points
-teff_points = np.array([1000, 1300, 1600, 1700, 2100, 2200])
+teff_points = np.array([1200, 1300, 1400, 1500, 1600])
 logg_points = np.arange(3.75, 4.51, 0.25)
-logg_par_dict = {3.75: "56", 4.0: "100", 4.25: "178", 4.5: "316"}
+logg_par_dict = {4.5: "316", 5.0: "1000"}
 teff_dict = OrderedDict()
 for i, teff in enumerate(teff_points):
     teff_dict[i] = str(teff)
 
-cloudy_suffix_dict = {False: "_cloudfree.spec", True: ".spec"}
-models_path = os.path.expandvars("$varsity/models/models_forGully/")
+band_suffix_dict = {
+    "K": "_m0.0_co1.0_4100_5000_0.005.spec",
+    "H": "_m0.0_co1.0_5000_7000_0.005.spec",
+    "low": "_m0.0_co1.0.spec",
+}
+models_path = os.path.expandvars("$HOME/libraries/raw/morley_clouds_20210805/")
 fns_morley = sorted(glob.glob(models_path + "/t*.spec"))
 
 
-def basename_constructor(teff, logg, cloudy=True):
-    """Construct the model basename base on Teff, logg, and cloudy flag"""
-    basename = "t{0:0>.0f}g{1:}f2_m0.0_co1.0_4100_5000_0.005{2:}".format(
-        np.float(teff), logg_par_dict[logg], cloudy_suffix_dict[cloudy]
+def basename_constructor(teff, logg, fsed, band):
+    """Construct the model basename base on Teff, logg, fsed and band.
+    
+    Note: band must be specified as 'H', 'K', or 'low'
+    """
+    basename = (
+        "t{0:0>.0f}g{1:}f{2:01d}".format(np.float(teff), logg_par_dict[logg], int(fsed))
+        + band_suffix_dict[band]
     )
+
     return basename
 
 
@@ -84,19 +92,17 @@ def get_lookup_dictionaries(fns, cloudy=True):
     return (g_lookup_dict, lookup_dict)
 
 
-def load_and_prep_spectrum(fn, wl_low=2.108, wl_high=2.134, downsample=4):
+def load_and_prep_spectrum(fn, wl_low, wl_high, downsample=4):
     df_native = (
         pd.read_csv(
-            fn, skiprows=[0, 1], delim_whitespace=True, names=["wavelength", "flux_raw"]
+            fn,
+            skiprows=[0, 1, 2],
+            delim_whitespace=True,
+            names=["wavelength", "flux_raw"],
         )
         .sort_values("wavelength")
         .reset_index(drop=True)
     )
-
-    assertion_msg = "We can only model K-band clouds currently: {:0.5f}, {:0.5f}".format(
-        wl_low, wl_high
-    )
-    # assert (wl_low > 2.0) & (wl_high < 2.51), assertion_msg
 
     ## Standardize flux density units to cgs
     morley_flux_w_units = df_native.flux_raw.values * u.Watt / u.m ** 2 / u.m
@@ -133,31 +139,23 @@ def create_interact_ui(doc):
     ## Make the spectrum sources
     # Initialize
     teff = 1300
-    logg = 4.0
+    logg = 4.5
+    fsed = 2.0
     ff = 0.3
-    basename = basename_constructor(np.float(teff), logg, False)
+    basename = basename_constructor(np.float(teff), logg, int(fsed), band)
 
     # Cloud-free
-    if band == "H":
-        wl_low = 2.1  # np.nanmin(spec1.wavelength.value / 10_000)
-        wl_high = 2.12  # np.nanmax(spec1.wavelength.value / 10_000)
-    else:
-        wl_low = np.nanmin(spec1.wavelength.value / 10_000)
-        wl_high = np.nanmax(spec1.wavelength.value / 10_000)
-    df_nir = load_and_prep_spectrum(
-        models_path + basename, downsample=4, wl_low=wl_low, wl_high=wl_high
-    )
+    wl_low = np.nanmin(spec1.wavelength.value / 10_000) * 0.995
+    wl_high = np.nanmax(spec1.wavelength.value / 10_000) * 1.005
 
-    # Cloudy
-    basename = basename_constructor(np.float(teff), logg, True)
-    df_cloud = load_and_prep_spectrum(
+    df_nir = load_and_prep_spectrum(
         models_path + basename, downsample=4, wl_low=wl_low, wl_high=wl_high
     )
 
     # Fixed normalization constant for all spectra
     scalar_norm = np.percentile(df_nir.flux.values, 50)
 
-    spec_source = ColumnDataSource(
+    spec_source_net = ColumnDataSource(
         data=dict(
             wavelength=df_nir.wavelength.values,
             flux=gaussian_filter1d(df_nir.flux.values / scalar_norm, 0.1),
@@ -166,33 +164,9 @@ def create_interact_ui(doc):
         )
     )
 
-    spec_source_cloud = ColumnDataSource(
-        data=dict(
-            wavelength=df_cloud.wavelength.values,
-            flux=gaussian_filter1d(df_cloud.flux.values / scalar_norm, 0.1),
-            native_flux=df_cloud.flux.values / scalar_norm,
-            native_wavelength=df_cloud.wavelength.values,
-        )
-    )
-
-    def cloud_mixture_model(ff):
-        """Compute the composite spectrum based on cloudy and cloud-free components"""
-        composite = (
-            ff * spec_source_cloud.data["flux"] + (1 - ff) * spec_source.data["flux"]
-        )
-        return composite
-
     spec_source_data = ColumnDataSource(
         data=dict(wavelength=spec1.wavelength.value / 10_000, flux=spec1.flux.value)
     )
-
-    spec_source_net = ColumnDataSource(
-        data=dict(
-            wavelength=spec_source.data["wavelength"], flux=cloud_mixture_model(ff)
-        )
-    )
-
-    spec_sources = {True: spec_source_cloud, False: spec_source}
 
     fig = figure(
         title="Custom Cloudy Sonora Model Dashboard",
@@ -261,26 +235,15 @@ def create_interact_ui(doc):
     )
     teff_message = Div(text="Closest grid point: {}".format(teff), width=100, height=10)
     logg_slider = Slider(
-        start=min(logg_points),
-        end=max(logg_points),
-        value=max(logg_points),
-        step=0.25,
-        title="logg",
-        width=490,
+        start=4.5, end=5.0, value=4.5, step=0.5, title="logg", width=490,
     )
 
-    ff_slider = Slider(
-        start=0,
-        end=1.0,
-        value=0.35,
-        step=0.01,
-        title="Filling factor of clouds",
-        width=490,
-    )
+    fsed_slider = Slider(start=1, end=3, value=2, step=1, title="fsed", width=490,)
     file_slider = Slider(
         start=0, end=3, value=0, step=1, title="Data File Index", width=490,
     )
 
+    # TODO: change the end value to 28 if H band
     order_slider = Slider(
         start=0, end=25, value=13, step=1, title="Echelle Order Index", width=490,
     )
@@ -322,33 +285,44 @@ def create_interact_ui(doc):
     def update_upon_smooth(attr, old, new):
         """Callback to take action when smoothing slider changes"""
         # spec_source.data["wavelength"] = df_nir.wavelength.values[::new]
-        spec_source.data["flux"] = gaussian_filter1d(
-            spec_source.data["native_flux"], new
+        spec_source_net.data["flux"] = gaussian_filter1d(
+            spec_source_net.data["native_flux"], new
         )
-        spec_source_cloud.data["flux"] = gaussian_filter1d(
-            spec_source_cloud.data["native_flux"], new
+        spec_source_net.data["flux"] = spec_source_net.data["flux"] / np.median(
+            spec_source_net.data["flux"]
         )
-        composite = cloud_mixture_model(ff_slider.value)
-        spec_source_net.data["flux"] = composite / np.median(composite)
 
     def update_upon_vz(attr, old, new):
         """Callback to take action when vz slider changes"""
-        spec_source.data["wavelength"] = spec_source.data["native_wavelength"] - new
-        spec_source_cloud.data["wavelength"] = (
-            spec_source_cloud.data["native_wavelength"] - new
+        spec_source_net.data["wavelength"] = (
+            spec_source_net.data["native_wavelength"] - new
         )
-        spec_source_net.data["wavelength"] = spec_source.data["wavelength"]
 
-    def update_upon_filling_factor_selection(attr, old, new):
+    def update_upon_fsed_selection(attr, old, new):
         """Callback to take action when smoothing slider changes"""
-        # spec_source.data["wavelength"] = df_nir.wavelength.values[::new]
-        composite = cloud_mixture_model(new)
-        spec_source_net.data["flux"] = composite / np.median(composite)
-        # new_const = np.median(spec_source_net.data["flux"])
-        # spec_source_net.data["flux"] = spec_source_net.data["flux"] / new_const
-        # spec_source_cloud.data["flux"] /= new_const
-        # spec_source.data["flux"] /= new_const
-        # renormalize_and_sync_flux_levels()
+        teff = find_nearest(teff_points, teff_slider.value)
+
+        wl_low = np.nanmin(spec_source_data.data["wavelength"])
+        wl_high = np.nanmax(spec_source_data.data["wavelength"])
+
+        basename = basename_constructor(np.float(teff), logg_slider.value, new, band)
+
+        fn = models_path + basename
+
+        df_nir = load_and_prep_spectrum(
+            fn, wl_low=wl_low, wl_high=wl_high, downsample=4,
+        )
+
+        spec_source_net.data = dict(
+            wavelength=df_nir.wavelength.values - vz_slider.value,
+            flux=gaussian_filter1d(df_nir.flux.values, smoothing_slider.value),
+            native_flux=df_nir.flux.values,
+            native_wavelength=df_nir.wavelength.values,
+        )
+
+        spec_source_net.data["flux"] = spec_source_net.data["flux"] / np.median(
+            spec_source_net.data["flux"]
+        )
 
     def update_upon_teff_selection(attr, old, new):
         """Callback to take action when teff slider changes"""
@@ -359,28 +333,25 @@ def create_interact_ui(doc):
         wl_low = np.nanmin(spec_source_data.data["wavelength"])
         wl_high = np.nanmax(spec_source_data.data["wavelength"])
 
-        for cloudy, source in zip([True, False], [spec_source_cloud, spec_source]):
-            basename = basename_constructor(np.float(teff), logg_slider.value, cloudy,)
+        basename = basename_constructor(
+            np.float(teff), logg_slider.value, int(fsed_slider.value), band
+        )
 
-            fn = models_path + basename
-            if precache:
-                df_nir = precached_grid[basename]
-            else:
-                df_nir = load_and_prep_spectrum(
-                    fn, downsample=4, wl_low=wl_low, wl_high=wl_high
-                )
+        fn = models_path + basename
 
-            source.data = dict(
-                wavelength=df_nir.wavelength.values - vz_slider.value,
-                flux=gaussian_filter1d(df_nir.flux.values, smoothing_slider.value),
-                native_flux=df_nir.flux.values,
-                native_wavelength=df_nir.wavelength.values,
-            )
+        df_nir = load_and_prep_spectrum(
+            fn, wl_low=wl_low, wl_high=wl_high, downsample=4,
+        )
 
-        composite = cloud_mixture_model(ff_slider.value)
         spec_source_net.data = dict(
-            wavelength=spec_source.data["wavelength"],
-            flux=composite / np.median(composite),
+            wavelength=df_nir.wavelength.values - vz_slider.value,
+            flux=gaussian_filter1d(df_nir.flux.values, smoothing_slider.value),
+            native_flux=df_nir.flux.values,
+            native_wavelength=df_nir.wavelength.values,
+        )
+
+        spec_source_net.data["flux"] = spec_source_net.data["flux"] / np.median(
+            spec_source_net.data["flux"]
         )
 
     def update_upon_logg_selection(attr, old, new):
@@ -390,27 +361,25 @@ def create_interact_ui(doc):
         wl_low = np.nanmin(spec_source_data.data["wavelength"])
         wl_high = np.nanmax(spec_source_data.data["wavelength"])
 
-        for cloudy in [True, False]:
-            basename = basename_constructor(np.float(teff), new, cloudy)
+        basename = basename_constructor(
+            np.float(teff), new, int(fsed_slider.value), band
+        )
+        fn = models_path + basename
 
-            fn = models_path + basename
-            if precache:
-                df_nir = precached_grid[basename]
-            else:
-                df_nir = load_and_prep_spectrum(
-                    fn, downsample=4, wl_low=wl_low, wl_high=wl_high
-                )
+        df_nir = load_and_prep_spectrum(
+            fn, wl_low=wl_low, wl_high=wl_high, downsample=4,
+        )
 
-            spec_sources[cloudy].data["native_wavelength"] = df_nir.wavelength.values
-            spec_sources[cloudy].data["native_flux"] = df_nir.flux.values
-            spec_sources[cloudy].data["wavelength"] = (
-                df_nir.wavelength.values - vz_slider.value
-            )
-            spec_sources[cloudy].data["flux"] = gaussian_filter1d(
-                df_nir.flux.values, smoothing_slider.value
-            )
-            composite = cloud_mixture_model(ff_slider.value)
-            spec_source_net.data["flux"] = composite / np.median(composite)
+        spec_source_net.data = dict(
+            wavelength=df_nir.wavelength.values - vz_slider.value,
+            flux=gaussian_filter1d(df_nir.flux.values, smoothing_slider.value),
+            native_flux=df_nir.flux.values,
+            native_wavelength=df_nir.wavelength.values,
+        )
+
+        spec_source_net.data["flux"] = spec_source_net.data["flux"] / np.median(
+            spec_source_net.data["flux"]
+        )
 
     def go_right_by_one():
         """Step forward in time by a single cadence"""
@@ -432,7 +401,7 @@ def create_interact_ui(doc):
     vz_slider.on_change("value", update_upon_vz)
     teff_slider.on_change("value", update_upon_teff_selection)
     logg_slider.on_change("value", update_upon_logg_selection)
-    ff_slider.on_change("value", update_upon_filling_factor_selection)
+    fsed_slider.on_change("value", update_upon_fsed_selection)
     file_slider.on_change("value", update_upon_file_change)
     order_slider.on_change("value", update_upon_order_change)
 
@@ -449,7 +418,7 @@ def create_interact_ui(doc):
         [sp4, logg_slider],
         [sp4, smoothing_slider],
         [sp4, vz_slider],
-        [sp4, ff_slider],
+        [sp4, fsed_slider],
         [sp4, file_slider],
         [sp4, order_slider],
     )
