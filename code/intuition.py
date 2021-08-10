@@ -21,13 +21,14 @@ precache = False  # Toggle for caching
 
 # Data
 band = "H"  # "H" or "K"
+end_order_dict = {"H": 27, "K": 25}
 data_path = "../../data/IGRINS/originals/GS-2021A-DD-104/*/reduced/SDC{}*.spec_a0v.fits".format(
     band
 )
 reduced_fns = glob.glob(data_path)
 reduced_fns = sorted(reduced_fns)
-reduced_fns = reduced_fns[slice(0, 8, 2)]
-# reduced_fns = reduced_fns[slice(1, 8, 2)]
+# reduced_fns = reduced_fns[slice(0, 8, 2)]
+reduced_fns = reduced_fns[slice(1, 8, 2)]
 
 spec1 = (
     IGRINSSpectrum(file=reduced_fns[3], order=13).remove_nans().normalize().trim_edges()
@@ -189,7 +190,7 @@ def create_interact_ui(doc):
         line_width=2,
         color="darkslateblue",
         source=spec_source_net,
-        legend_label="Partly cloudy mixture model",
+        legend_label="Cloudy model",
         nonselection_line_color="darkslateblue",
         nonselection_line_alpha=1.0,
     )
@@ -205,6 +206,7 @@ def create_interact_ui(doc):
     )
 
     fig.legend.location = "bottom_right"
+    fig.legend.orientation = "horizontal"
     # Slider to smooth the data
     smoothing_slider = Slider(
         start=0.1,
@@ -245,7 +247,12 @@ def create_interact_ui(doc):
 
     # TODO: change the end value to 28 if H band
     order_slider = Slider(
-        start=0, end=25, value=13, step=1, title="Echelle Order Index", width=490,
+        start=0,
+        end=end_order_dict[band],
+        value=13,
+        step=1,
+        title="Echelle Order Index",
+        width=490,
     )
 
     r_button = Button(label=">", button_type="default", width=30)
