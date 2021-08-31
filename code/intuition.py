@@ -27,8 +27,8 @@ data_path = "../../data/IGRINS/originals/GS-2021A-DD-104/*/reduced/SDC{}*.spec_a
 )
 reduced_fns = glob.glob(data_path)
 reduced_fns = sorted(reduced_fns)
-# reduced_fns = reduced_fns[slice(0, 8, 2)]
-reduced_fns = reduced_fns[slice(1, 8, 2)]
+reduced_fns = reduced_fns[slice(0, 8, 2)]
+# reduced_fns = reduced_fns[slice(1, 8, 2)]
 
 spec1 = (
     IGRINSSpectrum(file=reduced_fns[3], order=13).remove_nans().normalize().trim_edges()
@@ -49,6 +49,40 @@ band_suffix_dict = {
 }
 models_path = os.path.expandvars("$HOME/libraries/raw/morley_clouds_20210805/")
 fns_morley = sorted(glob.glob(models_path + "/t*.spec"))
+
+
+def calcBrightnessTemp_model_CVM(
+    wl, flux, cgs=False
+):  # wl in microns, flux in Watts/m^2/micron
+    if cgs == False:  # we're in mks units, and need to convert back in ergs/s/cm^2/Hz
+        for i in range(len(wl)):  # converts back from W/m2/micron to ergs/s/cm^2/Hz
+            flux[i] = flux[i] * wl[i] ** 2 * 1000 / 2.99792458e14
+
+    wn = np.empty(len(wl))
+    T_B = np.empty(len(wl))
+    for i in range(len(wl)):
+        wn[i] = 1 / (wl[i] * 1e-4)  # gives wavenumber in 1/cm
+        T_B[i] = (
+            1.4388
+            * wn[i]
+            / np.log(1.191e-5 * wn[i] ** 3 * np.pi / (2.99792458e10 * flux[i]) + 1)
+        )  # Equation from EGP code, prtout.mod.f lines
+
+    return T_B
+
+
+def calcBrightnessTemp_model_MGS(
+    wl, flux, cgs=False
+):  # wl in microns, flux in Watts/m^2/micron
+    if cgs == False:  # we're in mks units, and need to convert back in ergs/s/cm^2/Hz
+        flux = flux * wl ** 2 * 1000 / 2.99792458e14
+
+    wn = 1 / (wl * 1e-4)  # gives wavenumber in 1/cm
+    T_B = (
+        1.4388 * wn / np.log(1.191e-5 * wn ** 3 * np.pi / (2.99792458e10 * flux) + 1)
+    )  # Equation from EGP code, prtout.mod.f lines
+
+    return T_B
 
 
 def basename_constructor(teff, logg, fsed, band):
