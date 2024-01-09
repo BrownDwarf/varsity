@@ -2,7 +2,10 @@
 
 Multi-epoch time series monitoring of variable brown dwarfs for spectral decomposition of clouds and/or binary components
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/0yLgE_8YsIM?si=3Cg8pJ2vIFuXJG4I&amp;start=141" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+[![TESS Sci Con 2021 Talk](https://img.youtube.com/vi/0yLgE_8YsIM/2.jpg)](https://www.youtube.com/watch?v=0yLgE_8YsIM&t=144s)
+
+
 
 ### Authors:
 - Michael Gully-Santiago (UT Austin)
